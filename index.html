@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raffle System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96E6A1 , #4c4caf);
+            background-size: 400% 400%;
+            color: #fff;
+            text-align: center;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        header {
+            background-color: #4ca0af;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        nav {
+            margin: 1rem 0;
+        }
+        nav button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(145deg, #4c4caf, #45a049);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            transform-style: preserve-3d;
+        }
+        nav button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .container {
+            display: none;
+            margin: 2rem;
+        }
+        .active {
+            display: block;
+        }
+        input[type="text"], button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #4c7aaf;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        #winner {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+            background: #fff;
+            color: #333;
+            text-align: left;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .congrats {
+            color: #ff4081;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px #ffc107;
+            margin-top: 20px;
+            animation: popIn 0.8s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .balloons {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(circle, #ff4081, #c2185b);
+            border-radius: 50%;
+            animation: float 6s ease-in infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+        .file-upload {
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload label {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-upload label:hover {
+            background: #457aa0;
+            transform: scale(1.05);
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .upload-btn {
+            padding: 10px 20px;
+            background: #457aa0;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .upload-btn:hover {
+            background: #457aa0;
+            transform: scale(1.05);
+        }
+        #selectedFile {
+            color: white;
+            font-style: italic;
+        }
+        .upload-status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .upload-status.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            display: block;
+        }
+        .upload-status.error {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            display: block;
+        }
+        #refreshEntries {
+            background: #2196F3;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        #refreshEntries:hover {
+            background: #1976D2;
+        }
+        #refreshEntries.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        .search-container {
+            margin: 20px auto;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #searchEntries {
+            padding: 10px;
+            width: 60%;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .entry-count {
+            color: white;
+            font-size: 1.1rem;
+            background: rgba(76, 175, 80, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .highlight {
+            background-color: rgba(255, 255, 0, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .uploaded-files {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        .file-item .file-name {
+            color: white;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .file-item .file-status {
+            font-size: 0.9em;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .file-item .file-status.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4c89af;
+        }
+
+        .file-item .file-status.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .file-item .file-status.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .file-item button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .file-summary {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 5px;
+            color: white;
+        }
+
+        .pick-winner-btn {
+            padding: 40px 80px;
+            font-size: 3rem;
+            background: linear-gradient(45deg, #ff4081, #7c4dff);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            margin: 50px auto;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pick-winner-btn.hide {
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .winner-display {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .winner-display.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .winner-content {
+            text-align: center;
+            transform: scale(0);
+            animation: popIn 1s ease forwards;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 60px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            max-width: 80%;
+        }
+
+        .congrats-text {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700; }
+            50% { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700; }
+        }
+
+        .winner-name {
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255,255,255,0.7);
+            margin: 30px 0;
+            font-weight: bold;
+            transform: translateZ(50px);
+            animation: bounceIn 1s ease forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        .return-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .return-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .raffle-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .reset-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .reset-btn:hover {
+            background: #ff0000;
+            transform: scale(1.05);
+        }
+
+        .winner-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stats-info p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        .winner-number {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>˜”*°•.˜”*°• <B>ST THOMAS JACOBITE SYRIAN ORTHODOX CHURCH </B>•°*”˜.•°*”˜</h1>
+    </header>
+    <nav>
+        <button onclick="showPage('enterRaffle')">Enter Raffle</button>
+        <button onclick="showPage('downloadFile')">Download Entries</button>
+        <button onclick="showPage('pickWinner')">Pick Winner</button>
+        <button onclick="showPage('viewEntries')">View Entries</button>
+    </nav>
+    <div id="enterRaffle" class="container active">
+        <h2>ENTER COUPON ID TO REGISTER</h2>
+        <input type="text" id="raffleEntry" placeholder="Enter Coupon ID" required>
+        <div class="file-upload">
+            <h3>UPLOAD EXCEL FILES</h3>
+            <div class="uploaded-files">
+                <div class="file-info">
+                    <label for="excelFile" class="upload-btn">Choose Excel File<label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls" multiple onChange="handleExcelUpload(event)">
+                    <span id="selectedFile">No files selected</span>
+                </div>
+                <div id="fileList" class="file-list"></div>
+            </div>
+            <div id="uploadStatus" class="upload-status"></div>
+            <button id="refreshEntries" onclick="refreshEntries()" style="display: none;">
+                🔄 Refresh Entries
+            </button>
+        </div>
+    </div>
+    <div id="downloadFile" class="container">
+        <h2>Download Raffle Entries</h2>
+        <button onclick="downloadEntries()">Download</button>
+    </div>
+    <div id="pickWinner" class="container">
+        <div class="raffle-controls">
+            <button class="pick-winner-btn" onclick="pickWinner()">Pick Winner</button>
+            <button class="reset-btn" onclick="resetRaffle()">Reset Raffle</button>
+        </div>
+        <div id="winnerStats" class="winner-stats"></div>
+        <div id="winnerDisplay" class="winner-display">
+            <div class="winner-content">
+                <div class="congrats-text">🎉 Congratulations! 🎉</div>
+                <div class="winner-name" id="winnerName"></div>
+                <div class="congrats-text">Winner<span id="congrats-text"></span></div>
+                <button class="return-btn" onclick="hideWinner()">Return to Raffle</button>
+            </div>
+        </div>
+    </div>
+    <div id="viewEntries" class="container">
+        <h2>View Registered Entries</h2>
+        <div class="search-container">
+            <input type="text" id="searchEntries" placeholder="Search entries..." onkeyup="searchEntries()">
+            <div class="entry-count">Total Entries: <span id="entryCount">0</span></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Coupon ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="entriesList"></tbody>
+        </table>
+    </div>
+    <div class="balloons" id="balloons"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let entries = JSON.parse(localStorage.getItem('raffleEntries')) || [];
+        let processedFiles = new Map(JSON.parse(localStorage.getItem('processedFiles') || '[]'));
+        let previousWinners = JSON.parse(localStorage.getItem('previousWinners')) || [];
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'viewEntries') {
+                displayEntries();
+            }
+            
+            // Show refresh button if there are processed files
+            if (pageId === 'enterRaffle') {
+                document.getElementById('refreshEntries').style.display = 
+                    processedFiles.size > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        document.getElementById('raffleEntry').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addEntry();
+            }
+        });
+
+        function addEntry() {
+            const entry = document.getElementById('raffleEntry').value.trim();
+            if (!entry) {
+                alert('Coupon ID is required.');
+                return;
+            }
+            if (entries.includes(entry)) {
+                alert('This Coupon ID has already been registered.');
+                return;
+            }
+            entries.push(entry);
+            localStorage.setItem('raffleEntries', JSON.stringify(entries));
+            document.getElementById('raffleEntry').value = '';
+            alert(`${entry} added to the raffle.`);
+        }
+
+        function downloadEntries() {
+            const blob = new Blob([entries.join('\n')], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'raffle_entries.txt';
+            link.click();
+        }
+
+        function createFirework(x, y) {
+            const colors = ['#ff0', '#f0f', '#0ff', '#f00', '#0f0', '#00f'];
+            const particles = 30;
+            const angle = (Math.PI * 2) / particles;
+
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.position = 'fixed';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.borderRadius = '50%';
+                document.body.appendChild(particle);
+
+                const speed = 10 + Math.random() * 10;
+                const vx = Math.cos(angle * i) * speed;
+                const vy = Math.sin(angle * i) * speed;
+
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx * 10}px, ${vy * 10}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 500,
+                    easing: 'cubic-bezier(0,0,0.2,1)'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function handleExcelUpload(event) {
+            const files = event.target.files;
+            const fileNameDisplay = document.getElementById('selectedFile');
+            const fileList = document.getElementById('fileList');
+            const refreshBtn = document.getElementById('refreshEntries');
+            
+            if (!files.length) {
+                fileNameDisplay.textContent = 'No files selected';
+                return;
+            }
+
+            fileNameDisplay.textContent = `${files.length} file(s) selected`;
+            
+            Array.from(files).forEach(file => {
+                if (processedFiles.has(file.name)) {
+                    alert(`File "${file.name}" has already been processed.`);
+                    return;
+                }
+
+                // Create new file item without replacing existing ones
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-status pending">Processing...</span>
+                    <button onclick="removeFile('${file.name}')">Remove</button>
+                `;
+                fileList.appendChild(fileItem);
+
+                processFile(file, fileItem);
+            });
+
+            // Reset file input to allow selecting the same file again if needed
+            event.target.value = '';
+        }
+
+        function processFile(file, fileItem) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+                    let newEntries = 0;
+                    let duplicates = 0;
+                    let invalidEntries = 0;
+                    let fileEntries = [];
+
+                    jsonData.forEach((row, index) => {
+                        if (row[0]) {
+                            const entry = row[0].toString().trim();
+                            if (entry === '') {
+                                invalidEntries++;
+                                return;
+                            }
+                            if (!entries.includes(entry)) {
+                                entries.push(entry);
+                                fileEntries.push(entry);
+                                newEntries++;
+                            } else {
+                                duplicates++;
+                            }
+                        }
+                    });
+
+                    // Store file data
+                    processedFiles.set(file.name, {
+                        entries: fileEntries,
+                        stats: {
+                            new: newEntries,
+                            duplicates: duplicates,
+                            invalid: invalidEntries
+                        }
+                    });
+
+                    // Save to localStorage
+                    localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                    localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+                    
+                    const statusElement = fileItem.querySelector('.file-status');
+                    statusElement.className = 'file-status success';
+                    statusElement.textContent = `Added ${newEntries} entries`;
+                    
+                    // Add detailed summary
+                    const summary = document.createElement('div');
+                    summary.className = 'file-summary';
+                    summary.innerHTML = `
+                        File: ${file.name}<br>
+                        ✅ New entries: ${newEntries}<br>
+                        ⚠️ Duplicates: ${duplicates}<br>
+                        ❌ Invalid: ${invalidEntries}
+                    `;
+                    fileItem.appendChild(summary);
+
+                    displayEntries();
+                    document.getElementById('refreshEntries').style.display = 'inline-block';
+
+                } catch (error) {
+                    const statusElement = fileItem.querySelector('.file-status');
+                    statusElement.className = 'file-status error';
+                    statusElement.textContent = 'Error processing file';
+                }
+            };
+
+            reader.onerror = function() {
+                const statusElement = fileItem.querySelector('.file-status');
+                statusElement.className = 'file-status error';
+                statusElement.textContent = 'Error reading file';
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function removeFile(fileName) {
+            if (confirm(`Remove "${fileName}" from the list?`)) {
+                const fileList = document.getElementById('fileList');
+                const fileItems = fileList.getElementsByClassName('file-item');
+                
+                for (let item of fileItems) {
+                    if (item.querySelector('.file-name').textContent === fileName) {
+                        const fileData = processedFiles.get(fileName);
+                        if (fileData) {
+                            entries = entries.filter(entry => !fileData.entries.includes(entry));
+                            processedFiles.delete(fileName);
+                            
+                            // Update localStorage
+                            localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                            localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+                        }
+                        
+                        item.remove();
+                        displayEntries();
+                        break;
+                    }
+                }
+            }
+        }
+
+        function refreshEntries() {
+            const refreshBtn = document.getElementById('refreshEntries');
+            
+            refreshBtn.innerHTML = '🔄';
+            refreshBtn.classList.add('loading');
+            
+            // Show processing status
+            const uploadStatus = document.getElementById('uploadStatus');
+            uploadStatus.innerHTML = '⌛ Refreshing data from all files...';
+            uploadStatus.className = 'upload-status';
+            
+            setTimeout(() => {
+                let totalNew = 0;
+                let totalDuplicates = 0;
+                let totalInvalid = 0;
+                
+                // Clear existing entries but keep file records
+                entries = [];
+                
+                // Reprocess each file
+                processedFiles.forEach((fileData, fileName) => {
+                    const stats = reprocessFile(fileName, fileData);
+                    if (stats) {
+                        totalNew += stats.new;
+                        totalDuplicates += stats.duplicates;
+                        totalInvalid += stats.invalid;
+                    }
+                });
+
+                displayEntries();
+                refreshBtn.innerHTML = '🔄 Refresh Entries';
+                refreshBtn.classList.remove('loading');
+                
+                uploadStatus.innerHTML = `✅ Refresh complete for ${processedFiles.size} file(s):<br>
+                    - Total entries: ${entries.length}<br>
+                    - New entries: ${totalNew}<br>
+                    - Duplicates: ${totalDuplicates}<br>
+                    - Invalid: ${totalInvalid}`;
+                uploadStatus.className = 'upload-status success';
+                
+                // Update localStorage
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+            }, 500);
+        }
+
+        function reprocessFile(fileName, fileData) {
+            try {
+                const fileList = document.getElementById('fileList');
+                const fileItems = Array.from(fileList.getElementsByClassName('file-item'));
+                const fileItem = fileItems.find(item => 
+                    item.querySelector('.file-name').textContent === fileName
+                );
+
+                if (fileItem) {
+                    const statusElement = fileItem.querySelector('.file-status');
+                    statusElement.className = 'file-status pending';
+                    statusElement.textContent = 'Refreshing...';
+
+                    let newEntries = 0;
+                    let duplicates = 0;
+                    let invalidEntries = 0;
+                    let fileEntries = [];
+
+                    // Process entries from the file
+                    fileData.entries.forEach(entry => {
+                        if (entry.trim() === '') {
+                            invalidEntries++;
+                            return;
+                        }
+                        if (!entries.includes(entry)) {
+                            entries.push(entry);
+                            fileEntries.push(entry);
+                            newEntries++;
+                        } else {
+                            duplicates++;
+                        }
+                    });
+
+                    // Update file statistics
+                    const stats = {
+                        new: newEntries,
+                        duplicates: duplicates,
+                        invalid: invalidEntries
+                    };
+
+                    processedFiles.set(fileName, {
+                        entries: fileEntries,
+                        stats: stats
+                    });
+
+                    // Update file item display
+                    statusElement.className = 'file-status success';
+                    statusElement.textContent = `Added ${newEntries} entries`;
+
+                    // Update summary
+                    const summary = fileItem.querySelector('.file-summary');
+                    if (summary) {
+                        summary.innerHTML = `
+                            File: ${fileName}<br>
+                            ✅ New entries: ${newEntries}<br>
+                            ⚠️ Duplicates: ${duplicates}<br>
+                            ❌ Invalid: ${invalidEntries}
+                        `;
+                    }
+
+                    return stats;
+                }
+            } catch (error) {
+                console.error(`Error refreshing file ${fileName}:`, error);
+                return null;
+            }
+        }
+
+        function pickWinner() {
+            if (entries.length === 0) {
+                alert('No entries available to pick a winner.');
+                return;
+            }
+
+            // Filter out previous winners
+            const eligibleEntries = entries.filter(entry => !previousWinners.includes(entry));
+
+            if (eligibleEntries.length === 0) {
+                alert('All entries have already won! Please refresh the raffle.');
+                return;
+            }
+
+            const winnerBtn = document.querySelector('.pick-winner-btn');
+            const winnerDisplay = document.getElementById('winnerDisplay');
+            const winnerName = document.getElementById('winnerName');
+            
+            // Hide the button with animation
+            winnerBtn.classList.add('hide');
+
+            // Randomly select winner with animation
+            let shuffleCount = 0;
+            const shuffleInterval = setInterval(() => {
+                winnerName.textContent = eligibleEntries[Math.floor(Math.random() * eligibleEntries.length)];
+                shuffleCount++;
+                
+                if (shuffleCount > 20) {
+                    clearInterval(shuffleInterval);
+                    const winner = eligibleEntries[Math.floor(Math.random() * eligibleEntries.length)];
+                    
+                    // Add to previous winners
+                    previousWinners.push(winner);
+                    localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
+                    
+                    // Show final winner with effects
+                    setTimeout(() => {
+                        winnerDisplay.classList.add('active');
+                        winnerName.textContent = winner;
+                        createCelebrationEffects();
+                        updateWinnerStats();
+                    }, 300);
+                }
+            }, 100);
+        }
+
+        function updateWinnerStats() {
+            const statsDiv = document.getElementById('winnerStats');
+            if (statsDiv) {
+                statsDiv.innerHTML = `
+                    <div class="stats-info">
+                        <p>Total Entries: ${entries.length}</p>
+                        <p>Previous Winners: ${previousWinners.length}</p>
+                        <p>Remaining Entries: ${entries.length - previousWinners.length}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function resetRaffle() {
+            if (confirm('Are you sure you want to reset the raffle? This will clear all previous winners.')) {
+                previousWinners = [];
+                localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
+                
+                const winnerBtn = document.querySelector('.pick-winner-btn');
+                winnerBtn.classList.remove('hide');
+                
+                const winnerDisplay = document.getElementById('winnerDisplay');
+                winnerDisplay.classList.remove('active');
+                
+                updateWinnerStats();
+                
+                alert('Raffle has been reset! All entries are now eligible to win again.');
+            }
+        }
+
+        function createCelebrationEffects() {
+            // Create confetti
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    createConfetti();
+                }, i * 20);
+            }
+
+            // Create fireworks
+            const fireworksInterval = setInterval(() => {
+                for (let i = 0; i < 3; i++) {
+                    createFirework(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }
+            }, 300);
+
+            // Stop fireworks after 5 seconds
+            setTimeout(() => clearInterval(fireworksInterval), 5000);
+        }
+
+        function hideWinner() {
+            const winnerDisplay = document.getElementById('winnerDisplay');
+            const winnerBtn = document.querySelector('.pick-winner-btn');
+            
+            winnerDisplay.classList.remove('active');
+            winnerBtn.classList.remove('hide');
+        }
+
+        function displayEntries() {
+            const entriesList = document.getElementById('entriesList');
+            entriesList.innerHTML = '';
+            document.getElementById('entryCount').textContent = entries.length;
+
+            if (entries.length === 0) {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 3;
+                cell.textContent = 'No entries registered yet.';
+                row.appendChild(cell);
+                entriesList.appendChild(row);
+            } else {
+                entries.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    
+                    const numCell = document.createElement('td');
+                    numCell.textContent = index + 1;
+                    
+                    const idCell = document.createElement('td');
+                    idCell.textContent = entry;
+                    
+                    const deleteCell = document.createElement('td');
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = '🗑️ Delete';
+                    deleteBtn.style.backgroundColor = '#ff4444';
+                    deleteBtn.onclick = () => confirmDelete(index);
+                    deleteCell.appendChild(deleteBtn);
+                    
+                    row.appendChild(numCell);
+                    row.appendChild(idCell);
+                    row.appendChild(deleteCell);
+                    entriesList.appendChild(row);
+                });
+            }
+
+            // Apply any existing search filter
+            if (document.getElementById('searchEntries').value) {
+                searchEntries();
+            }
+        }
+
+        function confirmDelete(index) {
+            if (confirm(`Are you sure you want to delete entry: ${entries[index]}?`)) {
+                entries.splice(index, 1);
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                displayEntries();
+            }
+        }
+
+        function searchEntries() {
+            const searchTerm = document.getElementById('searchEntries').value.toLowerCase();
+            const entriesList = document.getElementById('entriesList');
+            const rows = entriesList.getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let row of rows) {
+                const idCell = row.getElementsByTagName('td')[1]; // Index 1 contains the Coupon ID
+                if (idCell) {
+                    const id = idCell.textContent || idCell.innerText;
+                    if (id.toLowerCase().includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleCount++;
+                        // Highlight matching text
+                        if (searchTerm) {
+                            const regex = new RegExp(`(${searchTerm})`, 'gi');
+                            idCell.innerHTML = id.replace(regex, '<span class="highlight">$1</span>');
+                        } else {
+                            idCell.innerHTML = id;
+                        }
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+
+            // Show no results message if needed
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && searchTerm) {
+                if (!noResults) {
+                    const message = document.createElement('tr');
+                    message.id = 'noResults';
+                    message.innerHTML = `<td colspan="3" class="no-results">No entries found matching "${searchTerm}"</td>`;
+                    entriesList.appendChild(message);
+                }
+            } else if (noResults) {
+                noResults.remove();
+            }
+
+            // Update entry count
+            document.getElementById('entryCount').textContent = entries.length;
+        }
+
+        // Add this function to restore the file list on page load
+        function restoreFileList() {
+            const fileList = document.getElementById('fileList');
+            const refreshBtn = document.getElementById('refreshEntries');
+
+            if (processedFiles.size > 0) {
+                refreshBtn.style.display = 'inline-block';
+                
+                processedFiles.forEach((fileData, fileName) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span class="file-name">${fileName}</span>
+                        <span class="file-status success">Added ${fileData.stats.new} entries</span>
+                        <button onclick="removeFile('${fileName}')">Remove</button>
+                    `;
+
+                    // Add detailed summary
+                    const summary = document.createElement('div');
+                    summary.className = 'file-summary';
+                    summary.innerHTML = `
+                        File: ${fileName}<br>
+                        ✅ New entries: ${fileData.stats.new}<br>
+                        ⚠️ Duplicates: ${fileData.stats.duplicates}<br>
+                        ❌ Invalid: ${fileData.stats.invalid}
+                    `;
+                    fileItem.appendChild(summary);
+                    fileList.appendChild(fileItem);
+                });
+            }
+        }
+
+        // Add this to your window.onload or at the end of your script
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreFileList();
+            displayEntries();
+        });
+    </script>
+</body>
+</html>
