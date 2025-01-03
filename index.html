@@ -513,6 +513,110 @@
             margin: 15px 0;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
+
+        /* Add these mobile-specific styles */
+        @media screen and (max-width: 768px) {
+            /* Header adjustments */
+            header h1 {
+                font-size: 1.2rem;
+                padding: 10px;
+            }
+
+            /* Navigation adjustments */
+            nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            nav button {
+                width: 100%;
+                margin: 0;
+            }
+
+            /* Table adjustments */
+            table {
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            /* Search container adjustments */
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            #searchEntries {
+                width: 100%;
+            }
+
+            /* File upload adjustments */
+            .file-upload {
+                margin: 10px;
+            }
+
+            .file-info {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .upload-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* Winner display adjustments */
+            .winner-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .winner-name {
+                font-size: 2rem;
+            }
+
+            .congrats-text {
+                font-size: 1.5rem;
+            }
+
+            /* Pick winner button adjustments */
+            .pick-winner-btn {
+                padding: 20px 40px;
+                font-size: 1.5rem;
+                width: 90%;
+                margin: 20px auto;
+            }
+
+            /* Stats adjustments */
+            .winner-stats {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            /* File list adjustments */
+            .file-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .file-item button {
+                width: 100%;
+            }
+
+            /* Table cell adjustments */
+            table td, table th {
+                padding: 8px 5px;
+                font-size: 0.9rem;
+            }
+
+            /* Entry count adjustment */
+            .entry-count {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
