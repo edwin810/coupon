@@ -6,7 +6,7 @@
     <title>Raffle System</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96E6A1 , #4c4caf);
@@ -15,6 +15,64 @@
             text-align: center;
             animation: gradientBG 15s ease infinite;
         }
+
+        .confirmation-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.95);
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        color: white;
+        text-align: center;
+        min-width: 300px;
+    }
+        .confirmation-modal h3 {
+        margin: 0 0 16px 0;
+        font-size: 18px;
+    }
+
+    .confirmation-modal p {
+        margin: 0 0 20px 0;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .confirm-btn, .cancel-btn {
+        padding: 8px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .confirm-btn {
+        background: #ff3b30;
+        color: white;
+    }
+
+    .confirm-btn:hover {
+        background: #ff1a1a;
+    }
+
+    .cancel-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .cancel-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -165,9 +223,31 @@
         }
         .file-info {
             display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex-grow: 1;
+        }
+        .file-date {
+            color: #aaa;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        .file-item {
+            display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .file-summary {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 5px;
+            font-size: 0.9em;
+            line-height: 1.4;
         }
         .upload-btn {
             padding: 10px 20px;
@@ -514,124 +594,2049 @@
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        /* Add these mobile-specific styles */
+        /* Update the mobile-specific styles */
         @media screen and (max-width: 768px) {
             /* Header adjustments */
+            header {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                padding: 5px;
+            }
+
             header h1 {
-                font-size: 1.2rem;
-                padding: 10px;
-            }
-
-            /* Navigation adjustments */
-            nav {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                padding: 10px;
-            }
-
-            nav button {
-                width: 100%;
+                font-size: 1rem;
+                padding: 5px;
                 margin: 0;
-            }
-
-            /* Table adjustments */
-            table {
-                width: 100%;
-                font-size: 0.9rem;
-            }
-
-            /* Search container adjustments */
-            .search-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            #searchEntries {
-                width: 100%;
+                word-wrap: break-word;
             }
 
             /* File upload adjustments */
             .file-upload {
                 margin: 10px;
+                padding: 10px;
             }
 
             .file-info {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 5px;
             }
 
-            .upload-btn {
+            /* Adjust the file input label */
+            .file-upload label.upload-btn {
+                display: block;
                 width: 100%;
                 text-align: center;
+                padding: 15px;
+                margin: 10px 0;
+                font-size: 1.1rem;
+                background: #4CAF50;
+                color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
 
-            /* Winner display adjustments */
-            .winner-content {
+            /* Adjust the selected file text */
+            #selectedFile {
+                display: block;
+                padding: 10px;
+                margin: 5px 0;
+                text-align: center;
+                word-break: break-all;
+            }
+
+            /* Container spacing */
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            /* Adjust heading sizes */
+            h2 {
+                font-size: 1.2rem;
+                margin: 10px 0;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+                margin: 8px 0;
+            }
+
+            /* Make buttons more touch-friendly */
+            button {
+                min-height: 44px;
+                padding: 12px 20px;
+            }
+        }
+
+        #excelFileSelect {
+            padding: 10px;
+            margin: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            background-color: white;
+            color: #333;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        #excelFileSelect:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        #downloadPendingEntries {
+            background: #4CAF50;
+            color: white;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        #downloadPendingEntries:hover {
+            background: #45a049;
+        }
+
+        .file-status.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .stats-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            color: white;
+            z-index: 1000;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .stats-popup h3 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+
+        .stats-popup button {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid white;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .stats-popup button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        nav button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.1), transparent);
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+
+        nav button:hover::after {
+            transform: translateY(0);
+        }
+
+        .exact-match {
+            background-color: rgba(76, 175, 80, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .partial-match {
+            background-color: rgba(255, 193, 7, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .similar-entries {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .similar-entries ul {
+            margin: 5px 0;
+            padding-left: 20px;
+            list-style-type: none;
+        }
+
+        .similar-entries li {
+            padding: 3px 0;
+            color: #ffd700;
+        }
+
+        #entriesList tr {
+            transition: background-color 0.3s;
+        }
+
+        #entriesList tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .remove-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .entry-count {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        #raffleEntry {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        #raffleEntry:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .helper-text {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #raffleEntry.invalid {
+            border-color: #ff4444;
+        }
+
+        .validation-message {
+            color: #ff4444;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .manual-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 8px;
+            color: #fff;
+        }
+
+        .manual-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 8px;
+            color: #fff;
+        }
+
+        #raffleEntry.invalid + .validation-message {
+            display: block;
+        }
+
+        /* Table Styles */
+        .entry-number {
+            width: 80px;
+        }
+
+        .number-badge {
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(78, 205, 196, 0.3);
+        }
+
+        .id-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .id-text {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #4ECDC4;
+            background: rgba(78, 205, 196, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .id-copy {
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .id-copy:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .source-file-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .source-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4ECDC4;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: rgba(78, 205, 196, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .source-link:hover {
+            background: rgba(78, 205, 196, 0.2);
+            transform: translateX(5px);
+        }
+
+        .source-manual {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffd700;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .source-date {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .source-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .source-action {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .source-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .source-action:hover .action-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .action-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Modal Styles */
+        .entry-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Quick Actions Toolbar */
+        .quick-actions-toolbar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toolbar-btn {
+            background: rgba(78, 205, 196, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        #quickSearch {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            color: white;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        #quickSearch:focus {
+            width: 300px;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.3);
+        }
+
+        .search-filters {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .search-wrapper:hover .search-filters {
+            display: block;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-inactive {
+            background: #FFA000;
+            box-shadow: 0 0 10px rgba(255, 160, 0, 0.5);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        *:hover > .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .info-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            perspective: 1000px;
+        }
+
+        .info-content {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform-style: preserve-3d;
+            transform: rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4),
+                        0 0 0 1px rgba(255,255,255,0.1);
+            animation: modalOpen 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .info-header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform: translateZ(20px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .info-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #4ECDC4;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transform: translateZ(10px);
+        }
+
+        .entry-badge {
+            background: linear-gradient(145deg, #2d2d2d, #222);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2),
+                        inset 0 -2px 5px rgba(255,255,255,0.1);
+            transform: translateZ(15px);
+        }
+
+        .entry-id {
+            font-size: 1.2rem;
+            color: #ffd700;
+            font-family: 'Roboto Mono', monospace;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            transform: translateZ(5px);
+        }
+
+        .info-label {
+            padding: 12px;
+            color: #4ECDC4;
+            font-weight: 500;
+            width: 130px;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .info-value {
+            padding: 12px;
+            background: linear-gradient(145deg, #2a2a2a, #222);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2),
+                        inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        .info-body {
+            padding: 20px;
+            transform-style: preserve-3d;
+        }
+
+        .close-btn {
+            background: linear-gradient(145deg, #333, #222);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transform: translateZ(10px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: translateZ(15px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        @keyframes modalOpen {
+            from {
+                opacity: 0;
+                transform: rotateX(10deg) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(5deg) translateY(0);
+            }
+        }
+
+        .entry-source {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 5px;
+            display: block;
+            font-weight: 300;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notification {
+            min-width: 350px;
+            max-width: 450px;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transform: translateY(-150%);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            border-bottom: 4px solid #1b5e20;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e53935, #c62828);
+            border-bottom: 4px solid #b71c1c;
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #fb8c00, #ef6c00);
+            border-bottom: 4px solid #e65100;
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #039be5, #0277bd);
+            border-bottom: 4px solid #01579b;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            color: white;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            min-width: 24px;
+            margin-top: 2px;
+        }
+
+        .notification-details {
+            flex-grow: 1;
+        }
+
+        .notification-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+
+        .notification-timestamp {
+            font-size: 11px;
+            opacity: 0.7;
+            font-family: monospace;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.2s;
+            padding: 0;
+            margin-left: 10px;
+            height: 24px;
+            width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-progress-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            animation: progress 4s linear forwards;
+        }
+
+        @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        @keyframes dropIn {
+            0% {
+                transform: translateY(-150%);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(10%);
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .notification.show {
+            animation: dropIn 0.5s ease forwards;
+        }
+
+        .notification.shake {
+            animation: dropIn 0.5s ease forwards, shake 0.5s ease 0.5s;
+        }
+
+        .notification.fade-out {
+            transform: translateY(-150%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Hover effect */
+        .notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #notification-container {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toast {
+            min-width: 300px;
+            margin: 10px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        .toast.success {
+            background-color: #4CAF50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999;
+        }
+
+        .alert {
+            padding: 15px 30px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            min-width: 300px;
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-success {
+            background-color: #4CAF50;
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .alert-error {
+            background-color: #f44336;
+            box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
+        }
+
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 16px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 300px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .alert:hover::before {
+            transform: translateX(100%);
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.85);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-left: 5px solid rgba(46, 125, 50, 0.9);
+        }
+
+        .alert-error {
+            background: rgba(244, 67, 54, 0.85);
+            box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-left: 5px solid rgba(198, 40, 40, 0.9);
+        }
+
+        .alert-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .alert-progress-bar {
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            width: 100%;
+            animation: progress 3s linear forwards;
+            border-radius: 0 0 12px 12px;
+        }
+
+        @keyframes progress {
+            to { width: 0% }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .alert.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .alert-close {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        .alert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+
+        .countdown-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: containerPulse 1s ease-in-out infinite;
+        }
+
+        .countdown-circle-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 15px solid rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            animation: rotateReverse 4s linear infinite;
+        }
+
+        .countdown-circle-inner {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border: 15px solid rgba(76, 175, 80, 0.2);
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .countdown-number {
+            font-size: 200px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 
+                0 0 20px rgba(76, 175, 80, 0.5),
+                0 0 40px rgba(76, 175, 80, 0.3),
+                0 0 60px rgba(76, 175, 80, 0.2);
+            animation: numberScale 1s ease-in-out;
+            font-family: 'Arial', sans-serif;
+            z-index: 2;
+        }
+
+        .countdown-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes numberScale {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes containerPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        
+        .multiple-entry-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .multiple-entry-input {
+            width: 100%;
+            min-height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .primary-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Add these styles for the multiple entries modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+
+        .multiple-entry-modal {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .multiple-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .multiple-entry-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .multiple-entry-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .multiple-entry-close:hover {
+            opacity: 1;
+        }
+
+        .multiple-entry-input {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .multiple-entry-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .multiple-entry-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .multiple-entry-btn.submit {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .multiple-entry-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .multiple-entry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Previous Winners Display */
+        .previous-winners {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .previous-winners h4 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .winners-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .winner-tag {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 5px 15px;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .winner-tag .winner-number {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Update these styles for the leaderboard */
+        .leaderboard {
+            position: fixed;
+            right: 20px;
+            top: 60%; /* Moved down from 50% to 60% */
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            width: 280px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+        }
+
+        .leaderboard.show {
+            opacity: 1;
+            transform: translateX(0) translateY(-40%); /* Adjusted to match new position */
+        }
+
+        .leaderboard-header {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+
+        .leaderboard-title {
+            font-size: 20px; /* Slightly smaller title */
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .winner-list {
+            list-style: none;
+            padding: 0 5px;
+            margin: 0;
+            overflow-y: auto;
+            height: calc(100% - 50px); /* Adjusted for smaller header */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        }
+
+        /* Customize scrollbar for webkit browsers */
+        .winner-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .winner-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .winner-list::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .winner-list::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Make winner items more compact */
+        .winner-item {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .winner-rank {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .winner-rank.gold {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000;
+            border: 2px solid #ffd700;
+        }
+
+        .winner-rank.silver {
+            background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+            color: #000;
+            border: 2px solid #C0C0C0;
+        }
+
+        .winner-rank.bronze {
+            background: linear-gradient(135deg, #cd7f32, #a0522d);
+            color: #000;
+            border: 2px solid #cd7f32;
+        }
+
+        .winner-details {
+            flex-grow: 1;
+        }
+
+        .winner-id {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .winner-timestamp {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .winner-rank.gold {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000;
+        }
+
+        .winner-rank.silver {
+            background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+            color: #000;
+        }
+
+        .winner-rank.bronze {
+            background: linear-gradient(135deg, #cd7f32, #a0522d);
+            color: #000;
+        }
+
+        .winner-details {
+            flex-grow: 1;
+        }
+
+        .winner-id {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .winner-timestamp {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: fall 4s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        .manual-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 8px;
+            color: #fff;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .search-wrapper {
+            flex: 1;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-controls {
+            position: relative;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 5px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            min-width: 180px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-menu label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 4px;
+        }
+
+        .filter-menu label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-menu input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .entry-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Update action button styles */
+        .action-btn.remove-btn {
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.remove-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        /* Toast notification styles */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;  /* Changed from top to bottom */
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: toastSlideUp 0.3s ease, toastFadeOut 0.3s ease 2.7s;
+            min-width: 300px;
+            font-size: 14px;
+        }
+
+        .toast::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.success::before {
+            content: '✅';
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff3b30;
+        }
+
+        .toast.error::before {
+            content: '❌';
+        }
+
+        .toast.info {
+            border-left: 4px solid #007AFF;
+        }
+
+        .toast.info::before {
+            content: 'ℹ️';
+        }
+
+        @keyframes toastSlideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastFadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Confirmation modal styles */
+        .confirmation-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            min-width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .confirmation-modal .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .confirmation-modal button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-modal .confirm-btn {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .confirmation-modal .confirm-btn:hover {
+            background: #ff1a1a;
+        }
+
+        .confirmation-modal .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .confirmation-modal .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            min-width: 300px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: toastSlideUp 0.3s ease forwards;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff3b30;
+        }
+
+        @keyframes toastSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+        }
+
+        /* Add this style if not already present */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            min-width: 300px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: toastSlideUp 0.3s ease forwards;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff3b30;
+        }
+
+        @keyframes toastSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+        }
+
+        /* Existing desktop styles remain unchanged */
+
+        /* Mobile Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .confirmation-modal {
+                width: 90%;
+                min-width: auto;
                 padding: 20px;
                 margin: 10px;
             }
 
-            .winner-name {
-                font-size: 2rem;
-            }
-
-            .congrats-text {
-                font-size: 1.5rem;
-            }
-
-            /* Pick winner button adjustments */
-            .pick-winner-btn {
-                padding: 20px 40px;
-                font-size: 1.5rem;
-                width: 90%;
-                margin: 20px auto;
-            }
-
-            /* Stats adjustments */
-            .winner-stats {
-                margin: 10px;
-                padding: 15px;
-            }
-
-            /* File list adjustments */
-            .file-item {
+            .modal-buttons {
                 flex-direction: column;
                 gap: 10px;
             }
 
-            .file-item button {
+            .confirm-btn, .cancel-btn {
                 width: 100%;
+                padding: 12px;
+                font-size: 16px; /* Larger touch targets */
             }
 
-            /* Table cell adjustments */
-            table td, table th {
-                padding: 8px 5px;
-                font-size: 0.9rem;
+            .toast-container {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
             }
 
-            /* Entry count adjustment */
-            .entry-count {
+            .toast {
+                min-width: auto;
                 width: 100%;
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+
+            .multiple-entries-container {
+                padding: 15px;
+            }
+
+            .multiple-entries-input {
+                min-height: 120px;
+                font-size: 16px; /* Better mobile typing */
+            }
+
+            .multiple-entries-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .add-multiple-btn {
+                width: 100%;
+                padding: 12px;
+                justify-content: center;
+            }
+
+            .entry-info {
                 text-align: center;
-                margin-top: 10px;
             }
         }
     </style>
 </head>
 <body>
+    <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999;"></div>
     <header>
-        <h1>˜”*°•.˜”*°• <B>ST THOMAS JACOBITE SYRIAN ORTHODOX CHURCH </B>•°*”˜.•°*”˜</h1>
+        <h1> <B>ST THOMAS JACOBITE SYRIAN ORTHODOX CHURCH </B></h1>
     </header>
     <nav>
         <button onclick="showPage('enterRaffle')">Enter Raffle</button>
-        <button onclick="showPage('downloadFile')">Download Entries</button>
+        <button onclick="showPage('multipleEntries')">Multiple Entries</button>
         <button onclick="showPage('pickWinner')">Pick Winner</button>
         <button onclick="showPage('viewEntries')">View Entries</button>
     </nav>
     <div id="enterRaffle" class="container active">
         <h2>ENTER COUPON ID TO REGISTER</h2>
         <input type="text" id="raffleEntry" placeholder="Enter Coupon ID" required>
+        <select id="excelFileSelect" style="margin: 10px; padding: 10px;">
+            <option value="">Select Excel file to update...</option>
+        </select>
+        <button onclick="addEntry()">Register Entry</button>
         <div class="file-upload">
             <h3>UPLOAD EXCEL FILES</h3>
             <div class="uploaded-files">
@@ -646,11 +2651,24 @@
             <button id="refreshEntries" onclick="refreshEntries()" style="display: none;">
                 🔄 Refresh Entries
             </button>
+            <button id="downloadPendingEntries" onclick="downloadPendingEntries()" style="display: none;">
+                📥 Download Updated Files
+            </button>
         </div>
     </div>
-    <div id="downloadFile" class="container">
-        <h2>Download Raffle Entries</h2>
-        <button onclick="downloadEntries()">Download</button>
+    <div id="multipleEntries" class="container">
+        <h2>Add Multiple Entries</h2>
+        <div class="multiple-entry-form">
+            <textarea id="bulkEntries" class="multiple-entry-input" placeholder="Enter one Coupon ID per line
+Example:
+COUPON123
+COUPON124
+COUPON125"></textarea>
+            <div class="button-group">
+                <button onclick="processMultipleEntries()" class="primary-btn">Add Entries</button>
+                <button onclick="clearEntries()" class="secondary-btn">Clear</button>
+            </div>
+        </div>
     </div>
     <div id="pickWinner" class="container">
         <div class="raffle-controls">
@@ -670,7 +2688,24 @@
     <div id="viewEntries" class="container">
         <h2>View Registered Entries</h2>
         <div class="search-container">
-            <input type="text" id="searchEntries" placeholder="Search entries..." onkeyup="searchEntries()">
+            <div class="search-wrapper">
+                <input type="text" id="searchEntries" placeholder="Search entries..." onkeyup="searchEntries()">
+            </div>
+            <div class="filter-controls">
+                <button class="filter-btn" onclick="toggleFilterMenu(this)">
+                    <span>🔍 Filters</span>
+                    <div class="filter-menu">
+                        <label>
+                            <input type="checkbox" id="filterManual" onchange="applyFilters()">
+                            Manual Entries
+                        </label>
+                        <label>
+                            <input type="checkbox" id="filterExcel" onchange="applyFilters()">
+                            Excel Entries
+                        </label>
+                    </div>
+                </button>
+            </div>
             <div class="entry-count">Total Entries: <span id="entryCount">0</span></div>
         </div>
         <table>
@@ -678,7 +2713,8 @@
                 <tr>
                     <th>No.</th>
                     <th>Coupon ID</th>
-                    <th>Action</th>
+                    <th>Source File</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="entriesList"></tbody>
@@ -687,47 +2723,643 @@
     <div class="balloons" id="balloons"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
+        // Add this at the start of your JavaScript code
+        function createNotificationSystem() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .alert-container {
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 999999;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .alert {
+                    padding: 16px 30px;
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: bold;
+                    text-align: center;
+                    opacity: 0;
+                    transform: translateY(-20px);
+                    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    min-width: 300px;
+                    position: relative;
+                    overflow: hidden;
+                    cursor: pointer;
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                }
+
+                .alert::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                    transform: translateX(-100%);
+                    transition: transform 0.5s;
+                }
+
+                .alert:hover::before {
+                    transform: translateX(100%);
+                }
+
+                .alert.show {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .alert-success {
+                    background: rgba(76, 175, 80, 0.85);
+                    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-left: 5px solid rgba(46, 125, 50, 0.9);
+                }
+
+                .alert-error {
+                    background: rgba(244, 67, 54, 0.85);
+                    box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-left: 5px solid rgba(198, 40, 40, 0.9);
+                }
+
+                .alert-icon {
+                    margin-right: 10px;
+                    font-size: 1.2em;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                }
+
+                .alert-progress {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 0 0 12px 12px;
+                }
+
+                .alert-progress-bar {
+                    height: 100%;
+                    background: rgba(255, 255, 255, 0.7);
+                    width: 100%;
+                    animation: progress 3s linear forwards;
+                    border-radius: 0 0 12px 12px;
+                }
+
+                @keyframes progress {
+                    to { width: 0% }
+                }
+
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+
+                .alert.shake {
+                    animation: shake 0.5s ease-in-out;
+                }
+
+                .alert-close {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    transition: opacity 0.2s;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                }
+
+                .alert-close:hover {
+                    opacity: 1;
+                }
+
+                .alert:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+                }
+            `;
+            document.head.appendChild(style);
+
+            const container = document.createElement('div');
+            container.className = 'alert-container';
+            document.body.appendChild(container);
+
+            return container;
+        }
+
+        const alertContainer = createNotificationSystem();
+
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            
+            // Add icon based on type
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            
+            alert.innerHTML = `
+                <span class="alert-icon">${icon}</span>
+                ${message}
+                <button class="alert-close">×</button>
+                <div class="alert-progress">
+                    <div class="alert-progress-bar"></div>
+                </div>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            // Trigger animations
+            setTimeout(() => {
+                alert.classList.add('show');
+                if (type === 'error') {
+                    alert.classList.add('shake');
+                }
+            }, 10);
+
+            // Handle close button
+            const closeBtn = alert.querySelector('.alert-close');
+            closeBtn.addEventListener('click', () => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            });
+
+            // Auto remove after 3 seconds
+            const timeout = setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+
+            // Pause timer on hover
+            alert.addEventListener('mouseenter', () => {
+                clearTimeout(timeout);
+                const progressBar = alert.querySelector('.alert-progress-bar');
+                if (progressBar) {
+                    progressBar.style.animationPlayState = 'paused';
+                }
+            });
+
+            // Resume timer on mouse leave
+            alert.addEventListener('mouseleave', () => {
+                const progressBar = alert.querySelector('.alert-progress-bar');
+                if (progressBar) {
+                    progressBar.style.animationPlayState = 'running';
+                }
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }, 3000);
+            });
+        }
+
+        // Add this at the start of your script section
+        function showNotification(message, type = 'success') {
+            console.log('Showing notification:', message);
+            
+            // First, ensure container exists and is properly positioned
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    pointer-events: none;
+                    z-index: 99999;
+                `;
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: relative;
+                top: 20px;
+                min-width: 300px;
+                margin: 10px;
+                padding: 15px 20px;
+                color: white;
+                text-align: center;
+                border-radius: 8px;
+                font-weight: bold;
+                pointer-events: auto;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: all 0.3s ease;
+                background-color: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            `;
+            toast.textContent = message;
+
+            // Insert at the beginning of container
+            container.insertBefore(toast, container.firstChild);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            });
+
+            // Remove after delay
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Remove any existing toast container to ensure clean setup
+        document.addEventListener('DOMContentLoaded', () => {
+            const oldContainer = document.getElementById('toast-container');
+            if (oldContainer) oldContainer.remove();
+        });
+
+        // 1. Initialize state properly
         let entries = JSON.parse(localStorage.getItem('raffleEntries')) || [];
         let processedFiles = new Map(JSON.parse(localStorage.getItem('processedFiles') || '[]'));
         let previousWinners = JSON.parse(localStorage.getItem('previousWinners')) || [];
 
+        // 2. Add navigation function
         function showPage(pageId) {
             document.querySelectorAll('.container').forEach(container => {
                 container.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
-            
+
+            // Handle leaderboard visibility
+            if (pageId === 'pickWinner') {
+                // Show leaderboard if there are previous winners
+                if (previousWinners && previousWinners.length > 0) {
+                    updateLeaderboard();
+                    const leaderboard = document.querySelector('.leaderboard');
+                    if (leaderboard) {
+                        leaderboard.classList.add('show');
+                        // Scroll to the latest winner
+                        setTimeout(() => {
+                            const winnerList = leaderboard.querySelector('.winner-list');
+                            if (winnerList && winnerList.lastElementChild) {
+                                winnerList.lastElementChild.scrollIntoView({ 
+                                    behavior: 'smooth', 
+                                    block: 'center' 
+                                });
+                            }
+                        }, 300);
+                    }
+                }
+            } else {
+                // Remove leaderboard when navigating away from pickWinner
+                const leaderboard = document.querySelector('.leaderboard');
+                if (leaderboard) {
+                    leaderboard.remove();
+                }
+            }
+
             if (pageId === 'viewEntries') {
                 displayEntries();
             }
-            
-            // Show refresh button if there are processed files
+
             if (pageId === 'enterRaffle') {
-                document.getElementById('refreshEntries').style.display = 
-                    processedFiles.size > 0 ? 'inline-block' : 'none';
+                const refreshBtn = document.getElementById('refreshEntries');
+                if (refreshBtn) {
+                    refreshBtn.style.display = processedFiles.size > 0 ? 'inline-block' : 'none';
+                }
             }
         }
 
-        document.getElementById('raffleEntry').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                addEntry();
+        // 3. Update entry management functions
+        function addEntry() {
+            const entryInput = document.getElementById('raffleEntry');
+            const entry = entryInput.value.trim().toUpperCase();
+
+            if (!entry) {
+                showAlert('Please enter a Coupon ID', 'error');
+                return;
             }
+
+            if (entries.includes(entry)) {
+                showAlert(`Coupon ID (${entry}) has already been registered`, 'error');
+                return;
+            }
+
+            // Store the manual entry date
+            const manualEntryDates = JSON.parse(localStorage.getItem('manualEntryDates') || '{}');
+            manualEntryDates[entry] = new Date().toISOString();
+            localStorage.setItem('manualEntryDates', JSON.stringify(manualEntryDates));
+
+            entries.push(entry);
+            saveToLocalStorage();
+            
+            if (entryInput) entryInput.value = '';
+            displayEntries();
+            showAlert(`Entry ${entry} has been registered successfully!`, 'success');
+        }
+
+        // 4. Update display function
+        function displayEntries() {
+            const entriesList = document.getElementById('entriesList');
+            const entryCount = document.getElementById('entryCount');
+            
+            if (!entriesList) return;
+            entriesList.innerHTML = '';
+
+            if (entries.length === 0) {
+                entriesList.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-content">
+                                <span class="empty-icon">📝</span>
+                                <h3>No Entries Yet</h3>
+                                <p>Start by adding entries manually or uploading an Excel file</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (entryCount) entryCount.textContent = '0';
+                return;
+            }
+
+            // Sort entries with most recent first
+            const sortedEntries = [...entries].reverse();
+
+            sortedEntries.forEach((entry, index) => {
+                const source = getEntrySource(entry);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="entry-number">
+                        <div class="number-badge">${sortedEntries.length - index}</div>
+                    </td>
+                    <td class="entry-id">
+                        <div class="id-container">
+                            <span class="id-text">${entry}</span>
+                            ${source.isManual ? '<span class="manual-badge">Manual</span>' : ''}
+                        </div>
+                    </td>
+                    <td class="source-file">
+                        ${getSourceFileHTML(source)}
+                    </td>
+                    <td class="actions">
+                        <div class="action-buttons">
+                            <button onclick="showEntryInfo('${entry}')" class="action-btn info-btn">
+                                <span class="tooltip">Info</span>
+                                ℹ️
+                            </button>
+                            <button onclick="confirmDelete('${entry}')" class="action-btn remove-btn">
+                                <span class="tooltip">Remove</span>
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                entriesList.appendChild(row);
+            });
+            
+            if (entryCount) entryCount.textContent = entries.length;
+        }
+
+        // 5. Update winner selection
+        function pickWinner() {
+            if (entries.length === 0) {
+                showAlert('No entries available to pick a winner.', 'error');
+                return;
+            }
+
+            // Always remove existing leaderboard when picking a winner
+            const existingLeaderboard = document.querySelector('.leaderboard');
+            if (existingLeaderboard) {
+                existingLeaderboard.remove();
+            }
+
+            const winnerBtn = document.querySelector('.pick-winner-btn');
+            if (winnerBtn) winnerBtn.style.display = 'none';
+
+            // Prevent multiple winner selections at once
+            if (document.querySelector('.countdown-overlay')) {
+                showAlert('Please wait for the current winner selection to complete.', 'error');
+                return;
+            }
+
+            // Filter out previous winners if there are still other entries available
+            const eligibleEntries = entries.filter(entry => !previousWinners.includes(entry));
+            const winner = eligibleEntries.length > 0 ? 
+                eligibleEntries[Math.floor(Math.random() * eligibleEntries.length)] :
+                entries[Math.floor(Math.random() * entries.length)];
+
+            // Start countdown animation
+            const countdown = document.createElement('div');
+            countdown.className = 'countdown-overlay';
+            countdown.innerHTML = `
+                <div class="countdown-container">
+                    <div class="countdown-circle-outer"></div>
+                    <div class="countdown-circle-inner"></div>
+                    <div class="countdown-number">5</div>
+                    <div class="countdown-text">Selecting Winner...</div>
+                </div>
+            `;
+            document.body.appendChild(countdown);
+
+            let count = 5;
+            const countdownInterval = setInterval(() => {
+                count--;
+                const numberElement = countdown.querySelector('.countdown-number');
+                const textElement = countdown.querySelector('.countdown-text');
+                
+                if (numberElement) {
+                    numberElement.textContent = count;
+                    if (count === 3) textElement.textContent = "Getting Ready...";
+                    if (count === 2) textElement.textContent = "Almost There...";
+                    if (count === 1) textElement.textContent = "Good Luck!";
+                }
+                
+                if (count === 0) {
+                    clearInterval(countdownInterval);
+                    countdown.remove();
+                    
+                    // Add to previous winners
+                    if (!previousWinners.includes(winner)) {
+                        previousWinners.push(winner);
+                        localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
+                    }
+
+                    // Show winner announcement
+                    const winnerDisplay = document.getElementById('winnerDisplay');
+                    const winnerName = document.getElementById('winnerName');
+                    const congratsText = document.getElementById('congrats-text');
+                    
+                    // Set winner number text
+                    const winnerNumber = getOrdinalSuffix(previousWinners.length);
+                    if (congratsText) {
+                        congratsText.textContent = ` - ${winnerNumber} Winner`;
+                    }
+                    
+                    winnerName.textContent = winner;
+                    winnerDisplay.classList.add('active');
+                    
+                    // Create celebration effects
+                    createCelebrationEffects();
+                    updateWinnerStats();
+                }
+            }, 1000);
+        }
+
+        // Add function to update the leaderboard
+        function updateLeaderboard() {
+            let leaderboard = document.querySelector('.leaderboard');
+            if (!leaderboard) {
+                leaderboard = createLeaderboard();
+            }
+
+            const winnerList = leaderboard.querySelector('.winner-list');
+            winnerList.innerHTML = '';
+
+            previousWinners.forEach((winner, index) => {
+                const li = document.createElement('li');
+                li.className = 'winner-item';
+                
+                // Determine rank class
+                let rankClass = '';
+                if (index === 0) rankClass = 'gold';
+                else if (index === 1) rankClass = 'silver';
+                else if (index === 2) rankClass = 'bronze';
+                
+                // Add top-10 indicator
+                if (index < 10) rankClass += ' top-10';
+
+                li.innerHTML = `
+                    <div class="winner-rank ${rankClass}">${index + 1}</div>
+                    <div class="winner-details">
+                        <div class="winner-id">${winner}</div>
+                        <div class="winner-timestamp">${getOrdinalSuffix(index + 1)} Winner</div>
+                    </div>
+                `;
+                
+                // Add delay to stagger animations
+                li.style.animationDelay = `${index * 0.1}s`;
+                
+                // Add 'new' class if this is the most recent winner
+                if (index === previousWinners.length - 1) {
+                    li.classList.add('new');
+                }
+                
+                winnerList.appendChild(li);
+            });
+        }
+
+        // Helper function to get ordinal suffix
+        function getOrdinalSuffix(number) {
+            const j = number % 10;
+            const k = number % 100;
+            
+            if (j == 1 && k != 11) return number + "st";
+            if (j == 2 && k != 12) return number + "nd";
+            if (j == 3 && k != 13) return number + "rd";
+            return number + "th";
+        }
+
+        // Update the createLeaderboard function
+        function createLeaderboard() {
+            const leaderboard = document.createElement('div');
+            leaderboard.className = 'leaderboard';
+            leaderboard.innerHTML = `
+                <div class="leaderboard-header">
+                    <h2 class="leaderboard-title">🏆 Winners Board</h2>
+                    <div class="winner-count">Total Winners: ${previousWinners.length}</div>
+                </div>
+                <ul class="winner-list"></ul>
+            `;
+            document.body.appendChild(leaderboard);
+            return leaderboard;
+        }
+
+        // Update the hideWinner function
+        function hideWinner() {
+            const winnerDisplay = document.getElementById('winnerDisplay');
+            const winnerBtn = document.querySelector('.pick-winner-btn');
+            
+            winnerDisplay.classList.remove('active');
+            
+            // Show the pick winner button
+            if (winnerBtn) {
+                winnerBtn.style.display = 'block';
+                winnerBtn.style.opacity = '1';
+            }
+
+            // Create and show leaderboard only when returning to raffle
+            if (previousWinners.length > 0) {
+                updateLeaderboard();
+                const leaderboard = document.querySelector('.leaderboard');
+                if (leaderboard) {
+                    leaderboard.classList.add('show');
+                    // Scroll to the latest winner
+                    setTimeout(() => {
+                        const winnerList = leaderboard.querySelector('.winner-list');
+                        if (winnerList && winnerList.lastElementChild) {
+                            winnerList.lastElementChild.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center' 
+                            });
+                        }
+                    }, 300);
+                }
+            }
+        }
+
+        // 6. Add helper functions
+        function createCelebration(winner) {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.innerHTML = `
+                <div class="congrats">Congratulations!</div>
+                <div class="winner-display">${winner}</div>
+                <button onclick="this.parentElement.remove()">Close</button>
+            `;
+            document.body.appendChild(celebration);
+        }
+
+        // 7. Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const raffleEntry = document.getElementById('raffleEntry');
+            if (raffleEntry) {
+                raffleEntry.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addEntry();
+                    }
+                });
+            }
+
+            displayEntries();
+            addQuickActionsToolbar();
         });
 
-        function addEntry() {
-            const entry = document.getElementById('raffleEntry').value.trim();
-            if (!entry) {
-                alert('Coupon ID is required.');
-                return;
+        // 8. Update storage functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles.entries())));
+                return true;
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                showAlert('Error saving data', 'error');
+                return false;
             }
-            if (entries.includes(entry)) {
-                alert('This Coupon ID has already been registered.');
-                return;
-            }
-            entries.push(entry);
-            localStorage.setItem('raffleEntries', JSON.stringify(entries));
-            document.getElementById('raffleEntry').value = '';
-            alert(`${entry} added to the raffle.`);
         }
 
         function downloadEntries() {
@@ -773,7 +3405,6 @@
             const files = event.target.files;
             const fileNameDisplay = document.getElementById('selectedFile');
             const fileList = document.getElementById('fileList');
-            const refreshBtn = document.getElementById('refreshEntries');
             
             if (!files.length) {
                 fileNameDisplay.textContent = 'No files selected';
@@ -783,130 +3414,219 @@
             fileNameDisplay.textContent = `${files.length} file(s) selected`;
             
             Array.from(files).forEach(file => {
-                if (processedFiles.has(file.name)) {
-                    alert(`File "${file.name}" has already been processed.`);
+                // Extract base name without date and extension
+                const baseFileName = file.name.replace(/(_\d{4}-\d{2}-\d{2})?\.xlsx?$/, '');
+                const currentDate = new Date().toISOString().slice(0,10);
+                const newFileName = `${baseFileName}_${currentDate}.xlsx`;
+
+                // Check if file already exists
+                let fileExists = false;
+                processedFiles.forEach((value, key) => {
+                    if (key === newFileName) {
+                        fileExists = true;
+                        showAlert(`File ${newFileName} has already been uploaded today.`, 'error');
+                        return;
+                    }
+                    // Remove older versions of the same file
+                    if (key.startsWith(baseFileName + '_')) {
+                        const oldDate = key.match(/_(\d{4}-\d{2}-\d{2})\.xlsx?$/)[1];
+                        if (oldDate < currentDate) {
+                            processedFiles.delete(key);
+                            showAlert(`Replaced older version: ${key} with new version: ${newFileName}`, 'info');
+                        }
+                    }
+                });
+
+                if (fileExists) {
                     return;
                 }
 
-                // Create new file item without replacing existing ones
+                // Create new file item
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 fileItem.innerHTML = `
-                    <span class="file-name">${file.name}</span>
+                    <div class="file-info">
+                        <span class="file-name">${newFileName}</span>
+                        <span class="file-date">Created: ${new Date().toLocaleString()}</span>
+                    </div>
                     <span class="file-status pending">Processing...</span>
-                    <button onclick="removeFile('${file.name}')">Remove</button>
+                    <button onclick="removeFile('${newFileName}')" class="remove-btn">Remove</button>
                 `;
                 fileList.appendChild(fileItem);
 
-                processFile(file, fileItem);
+                processFile(file, fileItem, newFileName);
             });
 
-            // Reset file input to allow selecting the same file again if needed
+            // Reset file input and update selector
             event.target.value = '';
+            updateExcelFileSelect();
+            
+            // Auto refresh after upload
+            setTimeout(refreshEntries, 500);
         }
 
-        function processFile(file, fileItem) {
+        function processFile(file, fileItem, newFileName) {
             const reader = new FileReader();
 
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    const headers = jsonData[0];
+                    const couponIdColumnIndex = headers.findIndex(h => 
+                        h?.toString().toLowerCase().includes('coupon') || 
+                        h?.toString().toLowerCase().includes('id') || 
+                        h?.toString().toLowerCase() === 'code'
+                    );
+
+                    if (couponIdColumnIndex === -1) {
+                        throw new Error('No coupon ID column found. Please ensure your Excel file has a column with "Coupon", "ID", or "Code" in the header.');
+                    }
 
                     let newEntries = 0;
                     let duplicates = 0;
                     let invalidEntries = 0;
                     let fileEntries = [];
+                    let entryDetails = {};
 
-                    jsonData.forEach((row, index) => {
-                        if (row[0]) {
-                            const entry = row[0].toString().trim();
-                            if (entry === '') {
-                                invalidEntries++;
-                                return;
-                            }
-                            if (!entries.includes(entry)) {
+                    // Process each row
+                    jsonData.slice(1).forEach(row => {
+                        if (row[couponIdColumnIndex]) {
+                            const entry = row[couponIdColumnIndex].toString().trim().toUpperCase();
+                            if (entry && !entries.includes(entry)) {
                                 entries.push(entry);
                                 fileEntries.push(entry);
+                                
+                                // Store all column data for this entry
+                                entryDetails[entry] = headers.reduce((acc, header, index) => {
+                                    if (header && row[index]) {
+                                        acc[header] = row[index];
+                                    }
+                                    return acc;
+                                }, {});
+                                
                                 newEntries++;
-                            } else {
+                            } else if (entry) {
                                 duplicates++;
                             }
+                        } else {
+                            invalidEntries++;
                         }
                     });
 
-                    // Store file data
-                    processedFiles.set(file.name, {
+                    // Store complete data
+                    const fileData = {
                         entries: fileEntries,
+                        entryDetails: entryDetails,
+                        worksheet: worksheet,
                         stats: {
                             new: newEntries,
                             duplicates: duplicates,
                             invalid: invalidEntries
-                        }
-                    });
+                        },
+                        createdAt: new Date().toISOString(),
+                        originalFileName: file.name,
+                        headers: headers
+                    };
 
-                    // Save to localStorage
-                    localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                    processedFiles.set(newFileName, fileData);
                     localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
-                    
+
                     const statusElement = fileItem.querySelector('.file-status');
                     statusElement.className = 'file-status success';
-                    statusElement.textContent = `Added ${newEntries} entries`;
-                    
-                    // Add detailed summary
-                    const summary = document.createElement('div');
-                    summary.className = 'file-summary';
-                    summary.innerHTML = `
-                        File: ${file.name}<br>
-                        ✅ New entries: ${newEntries}<br>
-                        ⚠️ Duplicates: ${duplicates}<br>
-                        ❌ Invalid: ${invalidEntries}
-                    `;
-                    fileItem.appendChild(summary);
+                    statusElement.textContent = `Added ${newEntries} entries (${duplicates} duplicates)`;
 
                     displayEntries();
-                    document.getElementById('refreshEntries').style.display = 'inline-block';
+                    updateExcelFileSelect();
+                    showAlert(`Successfully processed ${newEntries} entries from ${file.name}`, 'success');
 
                 } catch (error) {
+                    console.error('Error processing file:', error);
                     const statusElement = fileItem.querySelector('.file-status');
                     statusElement.className = 'file-status error';
-                    statusElement.textContent = 'Error processing file';
+                    statusElement.textContent = error.message || 'Error processing file';
+                    showAlert(error.message || 'Error processing file', 'error');
                 }
-            };
-
-            reader.onerror = function() {
-                const statusElement = fileItem.querySelector('.file-status');
-                statusElement.className = 'file-status error';
-                statusElement.textContent = 'Error reading file';
             };
 
             reader.readAsArrayBuffer(file);
         }
 
+        function updateFileSummary(fileItem, fileData) {
+            // Remove existing summary if it exists
+            const existingSummary = fileItem.querySelector('.file-summary');
+            if (existingSummary) {
+                existingSummary.remove();
+            }
+
+            const summary = document.createElement('div');
+            summary.className = 'file-summary';
+            summary.innerHTML = `
+                Original File: ${fileData.originalFileName || 'N/A'}<br>
+                Created: ${new Date(fileData.createdAt).toLocaleString()}<br>
+                ✅ New entries: ${fileData.stats.new}<br>
+                ⚠️ Duplicates: ${fileData.stats.duplicates}<br>
+                ❌ Invalid: ${fileData.stats.invalid}
+            `;
+            fileItem.appendChild(summary);
+        }
+
         function removeFile(fileName) {
-            if (confirm(`Remove "${fileName}" from the list?`)) {
+            const modal = document.createElement('div');
+            modal.className = 'confirmation-modal';
+            modal.innerHTML = `
+                <h3>Remove File</h3>
+                <p>Are you sure you want to remove this file?</p>
+                <div class="modal-buttons">
+                    <button class="confirm-btn" onclick="removeFileAndNotify('${fileName}')">Remove</button>
+                    <button class="cancel-btn" onclick="this.closest('.confirmation-modal').remove()">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function removeFileAndNotify(fileName) {
+            const fileData = processedFiles.get(fileName);
+            if (fileData) {
+                // Remove entries from this file
+                entries = entries.filter(entry => !fileData.entries.includes(entry));
+                processedFiles.delete(fileName);
+                
+                // Update localStorage
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles.entries())));
+                
+                // Remove the confirmation modal
+                const modal = document.querySelector('.confirmation-modal');
+                if (modal) modal.remove();
+                
+                // Remove the file item from the display
                 const fileList = document.getElementById('fileList');
                 const fileItems = fileList.getElementsByClassName('file-item');
-                
                 for (let item of fileItems) {
                     if (item.querySelector('.file-name').textContent === fileName) {
-                        const fileData = processedFiles.get(fileName);
-                        if (fileData) {
-                            entries = entries.filter(entry => !fileData.entries.includes(entry));
-                            processedFiles.delete(fileName);
-                            
-                            // Update localStorage
-                            localStorage.setItem('raffleEntries', JSON.stringify(entries));
-                            localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
-                        }
-                        
                         item.remove();
-                        displayEntries();
                         break;
                     }
                 }
+                
+                // Refresh displays
+                displayEntries();
+                updateExcelFileSelect();
+                
+                // Show success notification
+                showToast(`File has been successfully removed`, 'success');
+                
+                // Update the refresh button visibility
+                const refreshBtn = document.getElementById('refreshEntries');
+                if (refreshBtn) {
+                    refreshBtn.style.display = processedFiles.size > 0 ? 'inline-block' : 'none';
+                }
+            } else {
+                showToast('Failed to remove file. Please try again.', 'error');
             }
         }
 
@@ -918,7 +3638,7 @@
             
             // Show processing status
             const uploadStatus = document.getElementById('uploadStatus');
-            uploadStatus.innerHTML = '⌛ Refreshing data from all files...';
+            uploadStatus.innerHTML = '⌛ Refreshing data from Excel files...';
             uploadStatus.className = 'upload-status';
             
             setTimeout(() => {
@@ -926,10 +3646,16 @@
                 let totalDuplicates = 0;
                 let totalInvalid = 0;
                 
-                // Clear existing entries but keep file records
-                entries = [];
+                // First, separate manual entries from Excel entries
+                const manualEntries = entries.filter(entry => {
+                    const source = getEntrySource(entry);
+                    return source.isManual;
+                });
+
+                // Clear existing Excel entries only
+                entries = [...manualEntries]; // Preserve manual entries
                 
-                // Reprocess each file
+                // Reprocess each Excel file
                 processedFiles.forEach((fileData, fileName) => {
                     const stats = reprocessFile(fileName, fileData);
                     if (stats) {
@@ -940,22 +3666,26 @@
                 });
 
                 displayEntries();
+                updateExcelFileSelect();
                 refreshBtn.innerHTML = '🔄 Refresh Entries';
                 refreshBtn.classList.remove('loading');
                 
-                uploadStatus.innerHTML = `✅ Refresh complete for ${processedFiles.size} file(s):<br>
+                uploadStatus.innerHTML = `✅ Refresh complete for ${processedFiles.size} Excel file(s):<br>
+                    - Manual entries preserved: ${manualEntries.length}<br>
                     - Total entries: ${entries.length}<br>
                     - New entries: ${totalNew}<br>
                     - Duplicates: ${totalDuplicates}<br>
                     - Invalid: ${totalInvalid}`;
                 uploadStatus.className = 'upload-status success';
                 
-                // Update localStorage
                 localStorage.setItem('raffleEntries', JSON.stringify(entries));
                 localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+
+                showAlert(`Refresh complete. Manual entries (${manualEntries.length}) preserved.`, 'success');
             }, 500);
         }
 
+        // Update reprocessFile function to handle duplicates against manual entries
         function reprocessFile(fileName, fileData) {
             try {
                 const fileList = document.getElementById('fileList');
@@ -985,7 +3715,15 @@
                             fileEntries.push(entry);
                             newEntries++;
                         } else {
-                            duplicates++;
+                            // Check if duplicate is from a manual entry
+                            const source = getEntrySource(entry);
+                            if (source.isManual) {
+                                // If it's a manual entry duplicate, log it but don't add
+                                duplicates++;
+                            } else {
+                                // If it's an Excel entry duplicate, update it
+                                fileEntries.push(entry);
+                            }
                         }
                     });
 
@@ -997,6 +3735,7 @@
                     };
 
                     processedFiles.set(fileName, {
+                        ...fileData,
                         entries: fileEntries,
                         stats: stats
                     });
@@ -1006,68 +3745,18 @@
                     statusElement.textContent = `Added ${newEntries} entries`;
 
                     // Update summary
-                    const summary = fileItem.querySelector('.file-summary');
-                    if (summary) {
-                        summary.innerHTML = `
-                            File: ${fileName}<br>
-                            ✅ New entries: ${newEntries}<br>
-                            ⚠️ Duplicates: ${duplicates}<br>
-                            ❌ Invalid: ${invalidEntries}
-                        `;
-                    }
+                    updateFileSummary(fileItem, {
+                        ...fileData,
+                        stats: stats
+                    });
 
                     return stats;
                 }
             } catch (error) {
                 console.error(`Error refreshing file ${fileName}:`, error);
+                showAlert(`Error refreshing file ${fileName}: ${error.message}`, 'error');
                 return null;
             }
-        }
-
-        function pickWinner() {
-            if (entries.length === 0) {
-                alert('No entries available to pick a winner.');
-                return;
-            }
-
-            // Filter out previous winners
-            const eligibleEntries = entries.filter(entry => !previousWinners.includes(entry));
-
-            if (eligibleEntries.length === 0) {
-                alert('All entries have already won! Please refresh the raffle.');
-                return;
-            }
-
-            const winnerBtn = document.querySelector('.pick-winner-btn');
-            const winnerDisplay = document.getElementById('winnerDisplay');
-            const winnerName = document.getElementById('winnerName');
-            
-            // Hide the button with animation
-            winnerBtn.classList.add('hide');
-
-            // Randomly select winner with animation
-            let shuffleCount = 0;
-            const shuffleInterval = setInterval(() => {
-                winnerName.textContent = eligibleEntries[Math.floor(Math.random() * eligibleEntries.length)];
-                shuffleCount++;
-                
-                if (shuffleCount > 20) {
-                    clearInterval(shuffleInterval);
-                    const winner = eligibleEntries[Math.floor(Math.random() * eligibleEntries.length)];
-                    
-                    // Add to previous winners
-                    previousWinners.push(winner);
-                    localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
-                    
-                    // Show final winner with effects
-                    setTimeout(() => {
-                        winnerDisplay.classList.add('active');
-                        winnerName.textContent = winner;
-                        createCelebrationEffects();
-                        updateWinnerStats();
-                    }, 300);
-                }
-            }, 100);
         }
 
         function updateWinnerStats() {
@@ -1083,20 +3772,33 @@
             }
         }
 
+        // Update the resetRaffle function
         function resetRaffle() {
             if (confirm('Are you sure you want to reset the raffle? This will clear all previous winners.')) {
                 previousWinners = [];
                 localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
                 
+                // Show the pick winner button
                 const winnerBtn = document.querySelector('.pick-winner-btn');
-                winnerBtn.classList.remove('hide');
+                if (winnerBtn) {
+                    winnerBtn.style.display = 'block';
+                    winnerBtn.classList.remove('hide');
+                }
                 
+                // Hide winner display
                 const winnerDisplay = document.getElementById('winnerDisplay');
-                winnerDisplay.classList.remove('active');
+                if (winnerDisplay) {
+                    winnerDisplay.classList.remove('active');
+                }
+                
+                // Remove the leaderboard entirely
+                const leaderboard = document.querySelector('.leaderboard');
+                if (leaderboard) {
+                    leaderboard.remove(); // Completely remove the leaderboard instead of just hiding it
+                }
                 
                 updateWinnerStats();
-                
-                alert('Raffle has been reset! All entries are now eligible to win again.');
+                showAlert('Raffle has been reset! All entries are now eligible to win again.', 'info');
             }
         }
 
@@ -1122,81 +3824,276 @@
             setTimeout(() => clearInterval(fireworksInterval), 5000);
         }
 
-        function hideWinner() {
-            const winnerDisplay = document.getElementById('winnerDisplay');
-            const winnerBtn = document.querySelector('.pick-winner-btn');
-            
-            winnerDisplay.classList.remove('active');
-            winnerBtn.classList.remove('hide');
-        }
-
         function displayEntries() {
             const entriesList = document.getElementById('entriesList');
+            const entryCount = document.getElementById('entryCount');
+            
             entriesList.innerHTML = '';
-            document.getElementById('entryCount').textContent = entries.length;
+            const sortedEntries = [...entries].reverse();
+            
+            if (sortedEntries.length === 0) {
+                entriesList.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-content">
+                                <span class="empty-icon">📝</span>
+                                <h3>No Entries Yet</h3>
+                                <p>Start by adding entries manually or uploading an Excel file</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
-            if (entries.length === 0) {
+            sortedEntries.forEach((entry, index) => {
+                const source = getEntrySource(entry);
                 const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.colSpan = 3;
-                cell.textContent = 'No entries registered yet.';
-                row.appendChild(cell);
+                
+                row.innerHTML = `
+                    <td class="entry-number">
+                        <div class="number-badge">${sortedEntries.length - index}</div>
+                    </td>
+                    <td class="entry-id">
+                        <div class="id-container">
+                            <span class="id-text">${entry}</span>
+                            ${source.isManual ? '<span class="manual-badge">Manual</span>' : ''}
+                        </div>
+                    </td>
+                    <td class="source-file">
+                        ${getSourceFileHTML(source)}
+                    </td>
+                    <td class="actions">
+                        <div class="action-buttons">
+                            <button onclick="showEntryInfo('${entry}')" class="action-btn info-btn">
+                                <span class="tooltip">Info</span>
+                                ℹ️
+                            </button>
+                            <button onclick="confirmDelete('${entry}')" class="action-btn remove-btn">
+                                <span class="tooltip">Remove</span>
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
                 entriesList.appendChild(row);
-            } else {
-                entries.forEach((entry, index) => {
-                    const row = document.createElement('tr');
-                    
-                    const numCell = document.createElement('td');
-                    numCell.textContent = index + 1;
-                    
-                    const idCell = document.createElement('td');
-                    idCell.textContent = entry;
-                    
-                    const deleteCell = document.createElement('td');
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.textContent = '🗑️ Delete';
-                    deleteBtn.style.backgroundColor = '#ff4444';
-                    deleteBtn.onclick = () => confirmDelete(index);
-                    deleteCell.appendChild(deleteBtn);
-                    
-                    row.appendChild(numCell);
-                    row.appendChild(idCell);
-                    row.appendChild(deleteCell);
-                    entriesList.appendChild(row);
-                });
-            }
-
-            // Apply any existing search filter
-            if (document.getElementById('searchEntries').value) {
-                searchEntries();
-            }
+            });
+            
+            entryCount.textContent = entries.length;
         }
 
-        function confirmDelete(index) {
-            if (confirm(`Are you sure you want to delete entry: ${entries[index]}?`)) {
-                entries.splice(index, 1);
-                localStorage.setItem('raffleEntries', JSON.stringify(entries));
-                displayEntries();
+        function getSourceFileHTML(source) {
+            if (source.isManual) {
+                return `
+                    <div class="source-manual">
+                        <span class="source-text">Manual Entry</span>
+                        <span class="source-date">${formatDate(source.date)}</span>
+                    </div>
+                `;
             }
+
+            return `
+                <div class="source-file-container">
+                    <a href="#" class="source-link" onclick="downloadSourceFile('${source.fileName}', event)">
+                        ${source.fileName}
+                        <span class="source-date">${formatDate(source.date)}</span>
+                    </a>
+                </div>
+            `;
+        }
+
+        function showEntryInfo(entry) {
+            const source = getEntrySource(entry);
+            const fileData = source.isManual ? null : processedFiles.get(source.fileName);
+            
+            const infoPopup = document.createElement('div');
+            infoPopup.className = 'info-modal';
+            
+            let tableContent = '';
+            
+            if (!source.isManual && fileData) {
+                // Convert sheet data to array of objects with headers
+                const worksheet = XLSX.utils.sheet_to_json(fileData.worksheet, { header: 1 });
+                const headers = worksheet[0];
+                const dataRows = worksheet.slice(1);
+                
+                // Find the row containing our entry
+                const entryRow = dataRows.find(row => {
+                    const idColumnIndex = headers.findIndex(h => 
+                        h.toString().toLowerCase().includes('coupon') || 
+                        h.toString().toLowerCase().includes('id') || 
+                        h.toString().toLowerCase() === 'code'
+                    );
+                    return row[idColumnIndex]?.toString().trim().toUpperCase() === entry;
+                });
+
+                if (entryRow) {
+                    headers.forEach((header, index) => {
+                        if (entryRow[index] && header) {
+                            tableContent += `
+                                <tr>
+                                    <td class="info-label">${formatLabel(header)}</td>
+                                    <td class="info-value">${entryRow[index]}</td>
+                                </tr>
+                            `;
+                        }
+                    });
+                }
+            } else {
+                // Manual entry - show basic info
+                tableContent = `
+                    <tr>
+                        <td class="info-label">Entry Type</td>
+                        <td class="info-value">Manual Entry</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Date Created</td>
+                        <td class="info-value">${formatDate(source.date)}</td>
+                    </tr>
+                `;
+            }
+
+            infoPopup.innerHTML = `
+                <div class="info-content">
+                    <div class="info-header">
+                        <h3>Entry Information</h3>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <div class="info-body">
+                        <div class="entry-badge">
+                            <span class="entry-id">${entry}</span>
+                            <span class="entry-source">${source.isManual ? 'Manual Entry' : 'From: ' + source.fileName}</span>
+                        </div>
+                        <table class="info-table">
+                            <tbody>
+                                ${tableContent}
+                            </tbody>
+                        </table>
+                        ${!tableContent ? '<p class="no-data">No additional information available</p>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(infoPopup);
+        }
+
+        function formatDate(date) {
+            const formattedDate = new Date(date).toLocaleString();
+            return formattedDate.split(',')[0];
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Coupon ID copied to clipboard!');
+        }
+
+        function verifyEntry(entry) {
+            const source = getEntrySource(entry);
+            const modal = document.createElement('div');
+            modal.className = 'entry-modal';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Verify Entry</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-item">
+                            <span class="detail-label">Coupon ID:</span>
+                            <span class="detail-value">${entry}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Source:</span>
+                            <span class="detail-value">${source.isManual ? 'Manual Entry' : source.fileName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Added:</span>
+                            <span class="detail-value">${formatDate(source.date)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value status-active">Active</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="verifyEntry('${entry}')" class="modal-btn verify">Verify</button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="modal-btn cancel">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function exportEntryDetails(entry) {
+            const source = getEntrySource(entry);
+            const modal = document.createElement('div');
+            modal.className = 'entry-modal';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Export Entry Details</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-item">
+                            <span class="detail-label">Coupon ID:</span>
+                            <span class="detail-value">${entry}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Source:</span>
+                            <span class="detail-value">${source.isManual ? 'Manual Entry' : source.fileName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Added:</span>
+                            <span class="detail-value">${formatDate(source.date)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value status-active">Active</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="exportEntryDetails('${entry}')" class="modal-btn export">Export</button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="modal-btn cancel">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
         function searchEntries() {
-            const searchTerm = document.getElementById('searchEntries').value.toLowerCase();
+            const searchTerm = document.getElementById('searchEntries').value.trim().toUpperCase();
             const entriesList = document.getElementById('entriesList');
             const rows = entriesList.getElementsByTagName('tr');
             let visibleCount = 0;
 
             for (let row of rows) {
-                const idCell = row.getElementsByTagName('td')[1]; // Index 1 contains the Coupon ID
+                const idCell = row.getElementsByTagName('td')[1];
                 if (idCell) {
                     const id = idCell.textContent || idCell.innerText;
-                    if (id.toLowerCase().includes(searchTerm)) {
+                    const exactMatch = id.toUpperCase() === searchTerm;
+                    const partialMatch = id.toUpperCase().includes(searchTerm);
+                    
+                    if (searchTerm === '' || exactMatch || partialMatch) {
                         row.style.display = '';
                         visibleCount++;
-                        // Highlight matching text
-                        if (searchTerm) {
+                        
+                        // Highlight exact matches differently from partial matches
+                        if (searchTerm && exactMatch) {
+                            idCell.innerHTML = `<span class="exact-match">${id}</span>`;
+                        } else if (searchTerm && partialMatch) {
                             const regex = new RegExp(`(${searchTerm})`, 'gi');
-                            idCell.innerHTML = id.replace(regex, '<span class="highlight">$1</span>');
+                            idCell.innerHTML = id.replace(regex, '<span class="partial-match">$1</span>');
                         } else {
                             idCell.innerHTML = id;
                         }
@@ -1206,60 +4103,881 @@
                 }
             }
 
-            // Show no results message if needed
-            const noResults = document.getElementById('noResults');
-            if (visibleCount === 0 && searchTerm) {
-                if (!noResults) {
-                    const message = document.createElement('tr');
-                    message.id = 'noResults';
-                    message.innerHTML = `<td colspan="3" class="no-results">No entries found matching "${searchTerm}"</td>`;
-                    entriesList.appendChild(message);
-                }
-            } else if (noResults) {
-                noResults.remove();
-            }
-
             // Update entry count
-            document.getElementById('entryCount').textContent = entries.length;
+            document.getElementById('entryCount').textContent = visibleCount;
         }
 
         // Add this function to restore the file list on page load
         function restoreFileList() {
             const fileList = document.getElementById('fileList');
-            const refreshBtn = document.getElementById('refreshEntries');
-
-            if (processedFiles.size > 0) {
-                refreshBtn.style.display = 'inline-block';
+            fileList.innerHTML = '';
+            
+            processedFiles.forEach((fileData, fileName) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
                 
-                processedFiles.forEach((fileData, fileName) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'file-item';
-                    fileItem.innerHTML = `
+                // Ensure createdAt exists, use file date from filename as fallback
+                const createdAt = fileData.createdAt || extractDateFromFileName(fileName);
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
                         <span class="file-name">${fileName}</span>
-                        <span class="file-status success">Added ${fileData.stats.new} entries</span>
-                        <button onclick="removeFile('${fileName}')">Remove</button>
-                    `;
+                        <span class="file-date">Created: ${new Date(createdAt).toLocaleString()}</span>
+                    </div>
+                    <span class="file-status ${pendingDownloads.has(fileName) ? 'pending' : 'success'}">
+                        ${pendingDownloads.has(fileName) ? 'Pending Download' : `Added ${fileData.stats.new} entries`}
+                    </span>
+                    <button onclick="removeFile('${fileName}')">Remove</button>
+                `;
 
-                    // Add detailed summary
-                    const summary = document.createElement('div');
-                    summary.className = 'file-summary';
-                    summary.innerHTML = `
-                        File: ${fileName}<br>
-                        ✅ New entries: ${fileData.stats.new}<br>
-                        ⚠️ Duplicates: ${fileData.stats.duplicates}<br>
-                        ❌ Invalid: ${fileData.stats.invalid}
-                    `;
-                    fileItem.appendChild(summary);
-                    fileList.appendChild(fileItem);
+                // Add summary with creation date
+                updateFileSummary(fileItem, {
+                    ...fileData,
+                    createdAt: createdAt
                 });
+                
+                fileList.appendChild(fileItem);
+            });
+
+            // Update download button visibility
+            document.getElementById('downloadPendingEntries').style.display = 
+                pendingDownloads.size > 0 ? 'inline-block' : 'none';
+        }
+
+        function extractDateFromFileName(fileName) {
+            const dateMatch = fileName.match(/_(\d{4}-\d{2}-\d{2})/);
+            if (dateMatch) {
+                return new Date(dateMatch[1]).toISOString();
             }
+            return new Date().toISOString(); // Fallback to current date
+        }
+
+        // Add this function to update the Excel file selector
+        function updateExcelFileSelect() {
+            const select = document.getElementById('excelFileSelect');
+            select.innerHTML = '<option value="">Select Excel file to update...</option>';
+            
+            processedFiles.forEach((fileData, fileName) => {
+                const option = document.createElement('option');
+                option.value = fileName;
+                option.textContent = fileName;
+                select.appendChild(option);
+            });
         }
 
         // Add this to your window.onload or at the end of your script
         document.addEventListener('DOMContentLoaded', function() {
             restoreFileList();
             displayEntries();
+            updateExcelFileSelect();
+            startAutoSave();
+            updateNavigation();
         });
+
+        // Add this to track pending downloads
+        let pendingDownloads = new Map();
+
+        // Add function to download pending entries
+        function downloadPendingEntries() {
+            if (pendingDownloads.size === 0) {
+                showAlert('No pending files to download.', 'info');
+                return;
+            }
+
+            const downloadPrompt = confirm(`There are ${pendingDownloads.size} file(s) with new entries. Would you like to download them now?`);
+            
+            if (downloadPrompt) {
+                // Ask if user wants individual files or a complete record
+                const downloadType = confirm('Would you like to:\n' +
+                    'OK - Download one combined file with all entries\n' +
+                    'Cancel - Download individual files separately');
+
+                if (downloadType) {
+                    // Download combined file
+                    const currentDate = new Date().toISOString().slice(0,10);
+                    let newFileName = prompt(
+                        'Enter name for the complete record file:',
+                        `complete_raffle_entries_${currentDate}.xlsx`
+                    );
+
+                    if (newFileName) {
+                        if (!newFileName.endsWith('.xlsx')) {
+                            newFileName += '.xlsx';
+                        }
+
+                        // Create Excel workbook with all entries
+                        const wb = XLSX.utils.book_new();
+                        const ws = XLSX.utils.aoa_to_sheet([['Coupon ID', 'Source File']]);
+                        
+                        // Add all entries with their source file information
+                        const allEntries = [];
+                        processedFiles.forEach((fileData, fileName) => {
+                            fileData.entries.forEach(entry => {
+                                allEntries.push([entry, fileName]);
+                            });
+                        });
+                        
+                        XLSX.utils.sheet_add_aoa(ws, allEntries, {origin: -1});
+                        XLSX.utils.book_append_sheet(wb, ws, "All Entries");
+
+                        // Save the combined file
+                        XLSX.writeFile(wb, newFileName);
+                    }
+                } else {
+                    // Download individual files
+                    pendingDownloads.forEach((value, fileName) => {
+                        const fileData = processedFiles.get(fileName);
+                        if (fileData) {
+                            let newFileName = prompt(
+                                `Enter name for updated file (${fileName}):`,
+                                fileName.replace('.xlsx', '') + '_updated.xlsx'
+                            );
+                            
+                            if (newFileName) {
+                                if (!newFileName.endsWith('.xlsx')) {
+                                    newFileName += '.xlsx';
+                                }
+
+                                // Create Excel workbook
+                                const wb = XLSX.utils.book_new();
+                                const ws = XLSX.utils.aoa_to_sheet([['Coupon ID']]);
+                                XLSX.utils.sheet_add_aoa(ws, fileData.entries.map(e => [e]), {origin: -1});
+                                XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+                                // Save the updated Excel file
+                                XLSX.writeFile(wb, newFileName);
+                            }
+                        }
+                    });
+                }
+
+                pendingDownloads.clear();
+                document.getElementById('downloadPendingEntries').style.display = 'none';
+                showAlert('All files have been downloaded!', 'success');
+            }
+        }
+
+        // Add function to update file status display
+        function updateFileStatus(fileName) {
+            const fileList = document.getElementById('fileList');
+            const fileItems = fileList.getElementsByClassName('file-item');
+            
+            for (let item of fileItems) {
+                const nameSpan = item.querySelector('.file-name');
+                if (nameSpan && nameSpan.textContent === fileName) {
+                    const statusSpan = item.querySelector('.file-status');
+                    if (statusSpan) {
+                        statusSpan.className = 'file-status pending';
+                        statusSpan.textContent = 'Pending Download';
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Add validation for Coupon ID format
+        function validateCouponID(couponID) {
+            // Customize this regex pattern based on your coupon ID format
+            const pattern = /^[A-Z0-9]{4,10}$/i;
+            return pattern.test(couponID);
+        }
+
+        // Add backup functionality
+        function backupData() {
+            const backupData = {
+                entries: entries,
+                processedFiles: Array.from(processedFiles),
+                previousWinners: previousWinners,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `raffle_backup_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+        }
+
+        // Add restore functionality
+        function restoreBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Validate backup data
+                    if (!backupData.entries || !backupData.processedFiles) {
+                        throw new Error('Invalid backup file format');
+                    }
+
+                    // Restore data
+                    entries = backupData.entries;
+                    processedFiles = new Map(backupData.processedFiles);
+                    previousWinners = backupData.previousWinners || [];
+                    
+                    // Update storage
+                    localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                    localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+                    localStorage.setItem('previousWinners', JSON.stringify(previousWinners));
+                    
+                    // Refresh display
+                    refreshEntries();
+                    alert('Backup restored successfully!');
+                } catch (error) {
+                    alert('Error restoring backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Add duplicate entry detection
+        function findDuplicateEntries() {
+            const duplicates = new Map();
+            const exactDuplicates = [];
+            
+            entries.forEach((entry, index) => {
+                if (!duplicates.has(entry)) {
+                    duplicates.set(entry, [index]);
+                } else {
+                    duplicates.get(entry).push(index);
+                    if (!exactDuplicates.includes(entry)) {
+                        exactDuplicates.push(entry);
+                    }
+                }
+            });
+
+            return exactDuplicates;
+        }
+
+        // Add entry statistics
+        function showEntryStatistics() {
+            const stats = {
+                total: entries.length,
+                winners: previousWinners.length,
+                remaining: entries.length - previousWinners.length,
+                filesCount: processedFiles.size,
+                duplicates: findDuplicateEntries().length
+            };
+
+            const statsHTML = `
+                <div class="stats-popup">
+                    <h3>Raffle Statistics</h3>
+                    <p>Total Entries: ${stats.total}</p>
+                    <p>Previous Winners: ${stats.winners}</p>
+                    <p>Remaining Entries: ${stats.remaining}</p>
+                    <p>Active Files: ${stats.filesCount}</p>
+                    <p>Duplicate Entries: ${stats.duplicates}</p>
+                    <button onclick="this.parentElement.remove()">Close</button>
+                </div>
+            `;
+
+            const statsDiv = document.createElement('div');
+            statsDiv.innerHTML = statsHTML;
+            document.body.appendChild(statsDiv.firstElementChild);
+        }
+
+        // Add these buttons to your navigation
+        function updateNavigation() {
+            const nav = document.querySelector('nav');
+            nav.innerHTML += `
+                <button onclick="showEntryStatistics()">📊 Statistics</button>
+                <button onclick="backupData()">💾 Backup</button>
+                <input type="file" id="restoreBackup" accept=".json" style="display: none;" 
+                       onchange="restoreBackup(event)">
+                <button onclick="document.getElementById('restoreBackup').click()">
+                    📂 Restore
+                </button>
+            `;
+        }
+
+        // Add auto-save functionality
+        let autoSaveTimer;
+        function startAutoSave() {
+            if (autoSaveTimer) clearInterval(autoSaveTimer);
+            autoSaveTimer = setInterval(() => {
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                localStorage.setItem('processedFiles', JSON.stringify(Array.from(processedFiles)));
+                console.log('Auto-saved at:', new Date().toLocaleTimeString());
+            }, 60000); // Auto-save every minute
+        }
+
+        // Add function to check entry validity
+        function isValidEntry(entry) {
+            // Remove any whitespace
+            entry = entry.trim();
+            
+            // Check if entry is empty
+            if (!entry) return false;
+            
+            // Check if entry contains only valid characters (customize as needed)
+            const validCharacters = /^[A-Z0-9-_]+$/i;
+            if (!validCharacters.test(entry)) return false;
+            
+            // Check minimum and maximum length (adjust as needed)
+            if (entry.length < 3 || entry.length > 20) return false;
+            
+            return true;
+        }
+
+        // Add function to sanitize entry
+        function sanitizeEntry(entry) {
+            // Remove whitespace and convert to uppercase
+            return entry.trim().toUpperCase();
+        }
+
+        // Add function to show similar entries
+        function showSimilarEntries(entry) {
+            const similar = entries.filter(existingEntry => 
+                existingEntry !== entry && (
+                    existingEntry.includes(entry) || 
+                    entry.includes(existingEntry)
+                )
+            );
+
+            if (similar.length > 0) {
+                const statsDiv = document.createElement('div');
+                statsDiv.className = 'stats-popup';
+                statsDiv.innerHTML = `
+                    <h3>Similar Entries Found</h3>
+                    <p>New Entry: <strong>${entry}</strong></p>
+                    <div class="similar-entries">
+                        <h4>Similar Existing Entries:</h4>
+                        <ul>
+                            ${similar.map(e => `<li>${e}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button onclick="this.parentElement.remove()">Close</button>
+                `;
+                document.body.appendChild(statsDiv);
+            }
+        }
+
+        // Add Entry Status Tracking
+        function getEntryStatus(entry) {
+            const statuses = JSON.parse(localStorage.getItem('entryStatuses') || '{}');
+            const status = statuses[entry] || { active: true, lastUpdated: new Date().toISOString() };
+            return {
+                ...status,
+                class: status.active ? 'status-active' : 'status-inactive'
+            };
+        }
+
+        // Add Quick Actions Toolbar
+        function addQuickActionsToolbar() {
+            const toolbar = document.createElement('div');
+            toolbar.className = 'quick-actions-toolbar';
+            toolbar.innerHTML = `
+                <div class="toolbar-section">
+                    <button onclick="bulkAction('verify')" class="toolbar-btn">
+                        <span class="btn-icon">✓</span>
+                        Verify All
+                    </button>
+                    <button onclick="bulkAction('export')" class="toolbar-btn">
+                        <span class="btn-icon">📥</span>
+                        Export All
+                    </button>
+                    <button onclick="showStats()" class="toolbar-btn">
+                        <span class="btn-icon">📊</span>
+                        Statistics
+                    </button>
+                </div>
+                <div class="toolbar-section">
+                    <div class="search-wrapper">
+                        <input type="text" id="quickSearch" placeholder="Quick Search..." onkeyup="quickSearch(this.value)">
+                        <div class="search-filters">
+                            <label><input type="checkbox" onchange="updateSearch()"> Active Only</label>
+                            <label><input type="checkbox" onchange="updateSearch()"> Today's Entries</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.querySelector('.table-container').prepend(toolbar);
+        }
+
+        // Helper function to get entry source
+        function getEntrySource(entry) {
+            // First check if entry exists in any Excel file
+            for (const [fileName, fileData] of processedFiles.entries()) {
+                if (fileData.entries && fileData.entries.includes(entry)) {
+                    return {
+                        fileName: fileName,
+                        isManual: false,
+                        date: fileData.createdAt || new Date().toISOString()
+                    };
+                }
+            }
+
+            // If entry is not found in any Excel file, it's a manual entry
+            // Try to get stored manual entry date from localStorage
+            const manualEntryDates = JSON.parse(localStorage.getItem('manualEntryDates') || '{}');
+            
+            return {
+                fileName: 'Manual Entry',
+                isManual: true,
+                date: manualEntryDates[entry] || new Date().toISOString()
+            };
+        }
+
+        // Add utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }, 100);
+        }
+
+        // Add entry status management
+        function getEntryStatus(entry) {
+            const statuses = JSON.parse(localStorage.getItem('entryStatuses') || '{}');
+            const status = statuses[entry] || { active: true, lastUpdated: new Date().toISOString() };
+            return {
+                ...status,
+                class: status.active ? 'status-active' : 'status-inactive'
+            };
+        }
+
+        function toggleEntryStatus(entry) {
+            const statuses = JSON.parse(localStorage.getItem('entryStatuses') || '{}');
+            const currentStatus = statuses[entry] || { active: true, lastUpdated: new Date().toISOString() };
+            
+            statuses[entry] = {
+                active: !currentStatus.active,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('entryStatuses', JSON.stringify(statuses));
+            displayEntries();
+            showNotification(`Entry ${statuses[entry].active ? 'activated' : 'deactivated'}`, 'success');
+        }
+
+        // Add file management functions
+        function viewFileDetails(fileName, event) {
+            event.preventDefault();
+            const fileData = processedFiles.get(fileName);
+            if (!fileData) {
+                showNotification('File data not found', 'error');
+                return;
+            }
+            
+            showFileDetailsModal(fileName, fileData);
+        }
+
+        function previewFile(fileName, event) {
+            event.preventDefault();
+            // Implement file preview logic
+            showNotification('File preview coming soon!', 'info');
+        }
+
+        function exportFile(fileName, event) {
+            event.preventDefault();
+            const fileData = processedFiles.get(fileName);
+            if (!fileData) {
+                showNotification('File data not found', 'error');
+                return;
+            }
+
+            // Create and download Excel file
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet([['Coupon ID', 'Date Added']]);
+            
+            const entries = fileData.entries.map(entry => [
+                entry,
+                formatDate(fileData.createdAt || new Date().toISOString())
+            ]);
+            
+            XLSX.utils.sheet_add_aoa(ws, entries, {origin: -1});
+            XLSX.utils.book_append_sheet(wb, ws, "Entries");
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('File exported successfully!', 'success');
+        }
+
+        // Initialize the display when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            displayEntries();
+            addQuickActionsToolbar();
+        });
+
+        // Add helper function to format Excel column labels
+        function formatLabel(label) {
+            if (!label) return 'Unnamed Column';
+            return label
+                .split(/[\s_]+/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        // Add function to handle file downloads
+        function downloadSourceFile(fileName, event) {
+            event.preventDefault();
+            const fileData = processedFiles.get(fileName);
+            if (!fileData) {
+                alert('File data not found');
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet([['Coupon ID', 'Date Added', 'Source']]);
+            
+            const fileEntries = fileData.entries.map(entry => [
+                entry,
+                formatDate(fileData.createdAt || new Date().toISOString()),
+                fileName
+            ]);
+            
+            XLSX.utils.sheet_add_aoa(ws, fileEntries, {origin: -1});
+            XLSX.utils.book_append_sheet(wb, ws, "Entries");
+            XLSX.writeFile(wb, fileName);
+        }
+
+        // Simple notification function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            // Add to container
+            container.appendChild(toast);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        showToast("Test notification", "success");
+
+        showAlert('Success message test!', 'success');
+        showAlert('Error message test!', 'error');
+
+        function addMultipleEntries() {
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'modal-overlay';
+            modalOverlay.innerHTML = `
+                <div class="multiple-entry-modal">
+                    <div class="multiple-entry-header">
+                        <h3>Add Multiple Entries</h3>
+                        <button class="multiple-entry-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+                    </div>
+                    <p style="color: white; margin-bottom: 15px;">Enter one Coupon ID per line</p>
+                    <textarea class="multiple-entry-input" placeholder="Enter Coupon IDs here...
+Example:
+COUPON123
+COUPON124
+COUPON125"></textarea>
+                    <div class="multiple-entry-footer">
+                        <button class="multiple-entry-btn cancel" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                        <button class="multiple-entry-btn submit" onclick="processMultipleEntries()">Add Entries</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalOverlay);
+        }
+
+        function processMultipleEntries() {
+            const textarea = document.querySelector('.multiple-entry-input');
+            const newEntries = textarea.value.split('\n')
+                .map(entry => entry.trim().toUpperCase())
+                .filter(entry => entry !== '');
+            
+            let added = 0;
+            let duplicates = 0;
+            
+            // Get existing manual entry dates
+            const manualEntryDates = JSON.parse(localStorage.getItem('manualEntryDates') || '{}');
+            const currentDate = new Date().toISOString();
+            
+            newEntries.forEach(entry => {
+                if (!entries.includes(entry)) {
+                    entries.push(entry);
+                    // Store date for manual entry
+                    manualEntryDates[entry] = currentDate;
+                    added++;
+                } else {
+                    duplicates++;
+                }
+            });
+            
+            // Save manual entry dates
+            localStorage.setItem('manualEntryDates', JSON.stringify(manualEntryDates));
+            
+            saveToLocalStorage();
+            displayEntries();
+            
+            showAlert(`Added ${added} entries (${duplicates} duplicates found)`, 'success');
+            document.querySelector('.modal-overlay').remove();
+        }
+
+        // Make sure the button exists in the HTML structure
+        function initializeWinnerButton() {
+            const pickWinnerPage = document.getElementById('pickWinner');
+            if (pickWinnerPage && !pickWinnerPage.querySelector('.pick-winner-btn')) {
+                const raffleControls = pickWinnerPage.querySelector('.raffle-controls');
+                if (raffleControls) {
+                    const winnerBtn = document.createElement('button');
+                    winnerBtn.className = 'pick-winner-btn';
+                    winnerBtn.onclick = pickWinner;
+                    winnerBtn.textContent = 'Pick Winner';
+                    raffleControls.insertBefore(winnerBtn, raffleControls.firstChild);
+                }
+            }
+        }
+
+        // Add this to your DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... existing code ...
+            initializeWinnerButton();
+        });
+
+        // Add this function to create and manage the leaderboard
+        function createLeaderboard() {
+            const leaderboard = document.createElement('div');
+            leaderboard.className = 'leaderboard';
+            leaderboard.innerHTML = `
+                <div class="leaderboard-header">
+                    <h2 class="leaderboard-title">🏆 Winners Board</h2>
+                    <div class="winner-count">Total Winners: ${previousWinners.length}</div>
+                </div>
+                <ul class="winner-list"></ul>
+            `;
+            document.body.appendChild(leaderboard);
+            return leaderboard;
+        }
+
+        // Add this to your DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... existing code ...
+            
+            // Initialize leaderboard if there are previous winners
+            if (previousWinners && previousWinners.length > 0) {
+                updateLeaderboard();
+            }
+        });
+
+        // Add this function to handle browser back/forward buttons
+        window.addEventListener('popstate', function() {
+            const leaderboard = document.querySelector('.leaderboard');
+            if (leaderboard) {
+                leaderboard.remove();
+            }
+        });
+
+        function toggleFilterMenu(button) {
+            const menu = button.querySelector('.filter-menu');
+            menu.classList.toggle('show');
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function closeMenu(e) {
+                if (!button.contains(e.target)) {
+                    menu.classList.remove('show');
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+
+        function applyFilters() {
+            const filterManual = document.getElementById('filterManual').checked;
+            const filterExcel = document.getElementById('filterExcel').checked;
+            const searchTerm = document.getElementById('searchEntries').value.trim().toUpperCase();
+            const entriesList = document.getElementById('entriesList');
+            const rows = entriesList.getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let row of rows) {
+                const idCell = row.getElementsByTagName('td')[1];
+                const sourceCell = row.getElementsByTagName('td')[2];
+                
+                if (idCell && sourceCell) {
+                    const id = idCell.textContent || idCell.innerText;
+                    const isManual = sourceCell.textContent.includes('Manual Entry');
+                    const isExcel = !isManual;
+                    
+                    const matchesSearch = !searchTerm || id.toUpperCase().includes(searchTerm);
+                    const matchesFilter = 
+                        (!filterManual && !filterExcel) || 
+                        (filterManual && isManual) || 
+                        (filterExcel && isExcel);
+
+                    if (matchesSearch && matchesFilter) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+
+            document.getElementById('entryCount').textContent = visibleCount;
+        }
+
+        function searchEntries() {
+            applyFilters();
+        }
+
+        // Update the displayEntries function to use the new format
+        function displayEntries() {
+            const entriesList = document.getElementById('entriesList');
+            const entryCount = document.getElementById('entryCount');
+            
+            if (!entriesList) return;
+            entriesList.innerHTML = '';
+
+            if (entries.length === 0) {
+                entriesList.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-content">
+                                <span class="empty-icon">📝</span>
+                                <h3>No Entries Yet</h3>
+                                <p>Start by adding entries manually or uploading an Excel file</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (entryCount) entryCount.textContent = '0';
+                return;
+            }
+
+            const sortedEntries = [...entries].reverse();
+
+            sortedEntries.forEach((entry, index) => {
+                const source = getEntrySource(entry);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="entry-number">
+                        <div class="number-badge">${sortedEntries.length - index}</div>
+                    </td>
+                    <td class="entry-id">
+                        <div class="id-container">
+                            <span class="id-text">${entry}</span>
+                            ${source.isManual ? '<span class="manual-badge">Manual</span>' : ''}
+                        </div>
+                    </td>
+                    <td class="source-file">
+                        ${getSourceFileHTML(source)}
+                    </td>
+                    <td class="actions">
+                        <div class="action-buttons">
+                            <button onclick="showEntryInfo('${entry}')" class="action-btn info-btn">
+                                <span class="tooltip">Info</span>
+                                ℹ️
+                            </button>
+                            <button onclick="confirmDelete('${entry}')" class="action-btn remove-btn">
+                                <span class="tooltip">Remove</span>
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                entriesList.appendChild(row);
+            });
+            
+            if (entryCount) entryCount.textContent = entries.length;
+        }
+
+        // Make sure to call displayEntries when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            displayEntries();
+        });
+
+        // Add toast container to the body
+        if (!document.querySelector('.toast-container')) {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function confirmDelete(entry) {
+            const modal = document.createElement('div');
+            modal.className = 'confirmation-modal';
+            modal.innerHTML = `
+                <h3>Delete Entry</h3>
+                <p>Are you sure you want to delete this entry "${entry}"?</p>
+                <div class="modal-buttons">
+                    <button class="confirm-btn" onclick="deleteEntryAndNotify('${entry}')">Delete</button>
+                    <button class="cancel-btn" onclick="this.closest('.confirmation-modal').remove()">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function deleteEntryAndNotify(entry) {
+            const index = entries.indexOf(entry);
+            if (index > -1) {
+                // Remove the entry
+                entries.splice(index, 1);
+                
+                // Update localStorage
+                localStorage.setItem('raffleEntries', JSON.stringify(entries));
+                
+                // Remove the confirmation modal
+                const modal = document.querySelector('.confirmation-modal');
+                if (modal) modal.remove();
+                
+                // Refresh the display
+                displayEntries();
+                
+                // Show success notification
+                showToast(`Entry "${entry}" has been successfully deleted!`, 'success');
+                
+                console.log('Toast notification should appear'); // Debug log
+            } else {
+                showToast('Failed to delete entry. Please try again.', 'error');
+            }
+        }
+
+        // Update the removeEntry function to use the new confirmation flow
+        function removeEntry(entry) {
+            confirmDelete(entry);
+        }
+        
+
+        
+
+
+        
     </script>
 </body>
 </html>
